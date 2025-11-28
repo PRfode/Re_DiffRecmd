@@ -11,5 +11,12 @@
 
 ---
 
+## Dataset Prepare
+DiffRec 是给出用户的下一步点击概率，所以需要准备topK即可
+### MovieLens-1M 数据集
+运行 `src/data/MovieLens_1M/MovieLens-1M.ipynb` 下载并处理 MovieLens-1M 数据集。
+
+---
+
 ## Acknowledgments
 This project uses code from [ReChorus](https://github.com/THUwangcy/ReChorus) which is released under the MIT License.

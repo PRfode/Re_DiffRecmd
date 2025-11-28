@@ -8,3 +8,6 @@ figure/
 doc/
 model/
 search.py
+data/
+log/
+!data/*/*.ipynb
