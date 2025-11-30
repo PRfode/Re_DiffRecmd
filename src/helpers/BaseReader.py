@@ -44,7 +44,11 @@ class BaseReader(object):
         logging.info('Reading data from \"{}\", dataset = \"{}\" '.format(self.prefix, self.dataset))
         self.data_df = dict()
         for key in ['train', 'dev', 'test']:
-            self.data_df[key] = pd.read_csv(os.path.join(self.prefix, self.dataset, key + '.csv'), sep=self.sep).reset_index(drop=True).sort_values(by = ['user_id','time'])
+            # print(os.path.join(self.prefix, self.dataset, key + '.csv'))
+            # if not os.path.exists('data'):
+            #     os.makedirs('data')
+            #     print('Creating data directory')
+            self.data_df[key] = pd.read_csv(os.path.join('../',self.prefix, self.dataset, key + '.csv'), sep=self.sep).reset_index(drop=True).sort_values(by = ['user_id','time'])
             self.data_df[key] = utils.eval_list_columns(self.data_df[key])
 
         logging.info('Counting dataset statistics...')

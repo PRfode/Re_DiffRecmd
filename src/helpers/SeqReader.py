@@ -13,7 +13,7 @@ class SeqReader(BaseReader):
 
     def _append_his_info(self):
         """
-        self.user_his: store user history sequence [(i1,t1), (i1,t2), ...]
+        self.user_his: store user history sequence [(i1,t1), (i1,t2), ...] (item_id, time)
         add the 'position' of each interaction in user_his to data_df
         """
         logging.info('Appending history info...')
