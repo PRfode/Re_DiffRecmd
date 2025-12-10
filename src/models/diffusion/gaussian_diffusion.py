@@ -49,7 +49,11 @@ class GaussianDiffusion(nn.Module):
 
             self.calculate_for_diffusion()
             
-            print(self.betas)
+            # print(self.betas)
+            
+        if th.cuda.is_available():
+            print("init: synchronize")
+            th.cuda.synchronize(self.device)
 
         super(GaussianDiffusion, self).__init__()
     
@@ -105,6 +109,9 @@ class GaussianDiffusion(nn.Module):
             * th.sqrt(alphas)
             / (1.0 - self.alphas_cumprod)
         )
+        if th.cuda.is_available():
+            print("calculate_for_diffusion: synchronize")
+            th.cuda.synchronize(self.device)
     # def calculate_for_diffusion(self):
     #     print("calculate_for_diffusion")
     #     alphas = 1.0 - self.betas

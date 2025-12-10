@@ -11,4 +11,3 @@ search.py
 data/
 log/
 !data/*/*.ipynb
-.vscode/

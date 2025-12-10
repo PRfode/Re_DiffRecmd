@@ -64,13 +64,13 @@ class DiffRec_connector(BaseModel):
             steps=self.steps,
             device=self.device,
             history_num_per_term=10
-        )
+        ).to(self.device)  # 确保模型移动到设备上
 
         # # 3. 重要性采样缓存
         # self.history_num_per_term = 10
         # self.register_buffer('Lt_history', torch.zeros(self.steps, self.history_num_per_term))
         # self.register_buffer('Lt_count', torch.zeros(self.steps, dtype=torch.long))
-        # self.test_all = 1  # 评测时用全物品池
+        self.test_all = 1  # 评测时用全物品池
 
     # ---------- 训练 ----------
     def forward(self, feed_dict):
@@ -107,7 +107,7 @@ class DiffRec_connector(BaseModel):
         # 更新重要性缓冲
         with torch.no_grad():
             for ti, loss_val in zip(t, mse):
-                if self.diffusion.Lt_count[ti] == self.history_num_per_term:
+                if self.diffusion.Lt_count[ti] == self.diffusion.history_num_per_term:
                     self.diffusion.Lt_history[ti, :-1] = self.diffusion.Lt_history[ti, 1:].clone()
                     self.diffusion.Lt_history[ti, -1] = loss_val
                 else:

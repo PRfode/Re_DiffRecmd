@@ -1,0 +1,30 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python 调试程序: 当前文件",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "cwd": "${workspaceFolder}/src",
+            "console": "integratedTerminal",
+            "args": [
+                "--model_name", "DiffRec_connector",
+                "--dataset", "MovieLens_1M/ML_1MGDR",
+                "--path", "../data/",
+                "--diffusion_steps", "100",
+                "--noise_schedule", "linear",
+                "--noise_scale", "0.1",
+                "--embedding_size", "64",
+                "--hidden_dims", "[512, 256]",
+                "--epoch", "100",
+                "--batch_size", "256",
+                "--lr", "0.001",
+                "--gpu", "0"
+            ]
+        }
+    ]
+}
