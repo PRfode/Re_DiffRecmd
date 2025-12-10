@@ -1,0 +1,3 @@
+python main.py --model_name GDModel --dataset MovieLens_1M/ML_1MGDR --path ../data/ --diffusion_steps 100 --noise_schedule linear --noise_scale 0.1 --embedding_size 64 --hidden_dims "[512, 256]" --epoch 100 --batch_size 256 --lr 1e-3 --gpu 0
+
+python main.py --model_name DiffRec_beta --dataset MovieLens_1M/ML_1MGDR --path ../data/ --diffusion_steps 100 --noise_schedule linear --noise_scale 0.1 --embedding_size 64 --hidden_dims "[512, 256]" --epoch 100 --batch_size 256 --lr 1e-3 --gpu 0

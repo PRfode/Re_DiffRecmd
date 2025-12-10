@@ -17,6 +17,19 @@ from models.context_seq import *
 from models.reranker import *
 from utils import utils
 
+# 导入扩散模型相关模块
+try:
+    from models.diffusion.GD import GDModel
+    from models.diffusion import DiffRec_beta
+    from models.diffusion import DiffRec_connector
+    from models.diffusion import GDModel
+    from helpers.GDReader import GDReader
+    from helpers.GDRunner import GDRunner
+    DIFFUSION_AVAILABLE = True
+except ImportError as e:
+    DIFFUSION_AVAILABLE = False
+    print("Note: Diffusion models not available")
+    raise e
 
 def parse_global_args(parser):
 	parser.add_argument('--gpu', type=str, default='0',
@@ -37,6 +50,20 @@ def parse_global_args(parser):
 						help='Whether to regenerate intermediate files')
 	return parser
 
+def test_dnn(self):
+    """测试DNN是否能产生合理输出"""
+    batch_size = 4
+    test_input = torch.randn(batch_size, self.corpus.n_items).to(self.device)
+    test_t = torch.randint(0, self.steps, (batch_size,)).to(self.device)
+    
+    with torch.no_grad():
+        output = self.dnn(test_input, test_t)
+    
+    print(f"DNN Test - Input shape: {test_input.shape}")
+    print(f"DNN Test - Output shape: {output.shape}")
+    print(f"DNN Test - Output min/max/mean: {output.min():.4f}, {output.max():.4f}, {output.mean():.4f}")
+    
+    return output
 
 def main():
 	logging.info('-' * 45 + ' BEGIN: ' + utils.get_time() + ' ' + '-' * 45)
@@ -56,6 +83,7 @@ def main():
 
 	# Read data
 	corpus_path = os.path.join(args.path, args.dataset, model_name.reader+args.data_appendix+ '.pkl')
+	print(corpus_path)
 	if not args.regenerate and os.path.exists(corpus_path):
 		logging.info('Load corpus from {}'.format(corpus_path))
 		corpus = pickle.load(open(corpus_path, 'rb'))
@@ -70,13 +98,21 @@ def main():
 	logging.info(model)
 
 	# Define dataset
+	print('Loading data...')
 	data_dict = dict()
 	for phase in ['train', 'dev', 'test']:
 		data_dict[phase] = model_name.Dataset(model, corpus, phase)
+		logging.info('Data size of {} set: {}'.format(phase, len(data_dict[phase])))
 		data_dict[phase].prepare()
 
 	# Run model
+	print('Loading model...')
+	print(args.dataset)
+	# model.diffusion.see_betas()
 	runner = runner_name(args)
+	print('Loading model...')
+	logging.info('Pre Test Before Testing: ')
+	test_dnn(model)
 	logging.info('Test Before Training: ' + runner.print_res(data_dict['test']))
 	if args.load > 0:
 		model.load_model()
@@ -161,6 +197,20 @@ if __name__ == '__main__':
                   					for rerankers to select "General" or "Sequential" Baseranker.')
 	init_args, init_extras = init_parser.parse_known_args()
 	
+
+
+	# try:
+	# 	if init_args.model_name == 'GDModel':
+	# 		model_name = GDModel
+	# 		reader_name = GDReader
+	# 		runner_name = GDRunner
+	# 	else:
+	# 		model_name = eval('{0}.{0}{1}'.format(init_args.model_name,init_args.model_mode))
+	# 		reader_name = eval('{0}.{0}'.format(model_name.reader))
+	# 		runner_name = eval('{0}.{0}'.format(model_name.runner))
+	# except:
+	# 	logging.error(f"Model {init_args.model_name} not found")
+	# 	sys.exit(1)
 	model_name = eval('{0}.{0}{1}'.format(init_args.model_name,init_args.model_mode))
 	reader_name = eval('{0}.{0}'.format(model_name.reader))  # model chooses the reader
 	runner_name = eval('{0}.{0}'.format(model_name.runner))  # model chooses the runner

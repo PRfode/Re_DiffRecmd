@@ -39,7 +39,7 @@ class BaseReader(object):
                     self.train_clicked_set[uid].add(iid)
                 else:
                     self.residual_clicked_set[uid].add(iid)
-
+    
     def _read_data(self):
         logging.info('Reading data from \"{}\", dataset = \"{}\" '.format(self.prefix, self.dataset))
         self.data_df = dict()
@@ -48,7 +48,12 @@ class BaseReader(object):
             # if not os.path.exists('data'):
             #     os.makedirs('data')
             #     print('Creating data directory')
-            self.data_df[key] = pd.read_csv(os.path.join('../',self.prefix, self.dataset, key + '.csv'), sep=self.sep).reset_index(drop=True).sort_values(by = ['user_id','time'])
+            # temp = pd.read_csv(os.path.join(self.prefix, self.dataset, key + '.csv'), sep=self.sep).reset_index(drop=True)
+            print(os.path.join(self.prefix, self.dataset, key + '.csv'))
+            # print(temp.head())
+            # print(temp.columns)
+            # print(temp.sort_values(by = ['user_id','time']).head())
+            self.data_df[key] = pd.read_csv(os.path.join(self.prefix, self.dataset, key + '.csv'), sep=self.sep).reset_index(drop=True).sort_values(by = ['user_id','time'])
             self.data_df[key] = utils.eval_list_columns(self.data_df[key])
 
         logging.info('Counting dataset statistics...')
