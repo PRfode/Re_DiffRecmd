@@ -20,7 +20,7 @@ from utils import utils
 # 导入扩散模型相关模块
 try:
     from models.diffusion.GD import GDModel
-    from models.diffusion import DiffRec_beta
+    from models.diffusion import DiffRec_c
     from models.diffusion import DiffRec_connector
     from models.diffusion import GDModel
     from helpers.GDReader import GDReader
@@ -59,9 +59,9 @@ def test_dnn(self):
     with torch.no_grad():
         output = self.dnn(test_input, test_t)
     
-    print(f"DNN Test - Input shape: {test_input.shape}")
-    print(f"DNN Test - Output shape: {output.shape}")
-    print(f"DNN Test - Output min/max/mean: {output.min():.4f}, {output.max():.4f}, {output.mean():.4f}")
+    print(f"	DNN Test - Input shape: {test_input.shape}")
+    print(f"	DNN Test - Output shape: {output.shape}")
+    print(f"	DNN Test - Output min/max/mean: {output.min():.4f}, {output.max():.4f}, {output.mean():.4f}")
     
     return output
 
@@ -88,6 +88,7 @@ def main():
 		logging.info('Load corpus from {}'.format(corpus_path))
 		corpus = pickle.load(open(corpus_path, 'rb'))
 	else:
+		print(os.getcwd())
 		corpus = reader_name(args)
 		logging.info('Save corpus to {}'.format(corpus_path))
 		pickle.dump(corpus, open(corpus_path, 'wb'))

@@ -46,14 +46,16 @@ class GaussianDiffusion(nn.Module):
             assert len(self.betas.shape) == 1, "betas must be 1-D"
             assert len(self.betas) == self.steps, "num of betas must equal to diffusion steps"
             assert (self.betas > 0).all() and (self.betas <= 1).all(), "betas out of range"
-
+            
             self.calculate_for_diffusion()
             
             # print(self.betas)
             
-        if th.cuda.is_available():
+        if th.cuda.is_available() and self.device.type == 'cuda':
             print("init: synchronize")
             th.cuda.synchronize(self.device)
+            
+        
 
         super(GaussianDiffusion, self).__init__()
     
@@ -109,7 +111,7 @@ class GaussianDiffusion(nn.Module):
             * th.sqrt(alphas)
             / (1.0 - self.alphas_cumprod)
         )
-        if th.cuda.is_available():
+        if th.cuda.is_available() and self.device.type == 'cuda':
             print("calculate_for_diffusion: synchronize")
             th.cuda.synchronize(self.device)
     # def calculate_for_diffusion(self):
@@ -160,7 +162,7 @@ class GaussianDiffusion(nn.Module):
         if steps == 0:
             x_t = x_start
         else:
-            print('p_sample come to q_sample')
+            # print('p_sample come to q_sample')
             t = th.tensor([steps - 1] * x_start.shape[0]).to(x_start.device)
             x_t = self.q_sample(x_start, t)
 
@@ -270,18 +272,18 @@ class GaussianDiffusion(nn.Module):
             noise = th.randn_like(x_start)
         assert noise.shape == x_start.shape
         
-        # 调试：检查提取的值
-        sqrt_alpha = self._extract_into_tensor(self.sqrt_alphas_cumprod, t, x_start.shape)
-        sqrt_one_minus_alpha = self._extract_into_tensor(self.sqrt_one_minus_alphas_cumprod, t, x_start.shape)
-        print(f"q_sample调试:")
-        print(f"  t={t[0] if len(t) > 0 else t}")
-        print(f"  sqrt_alphas_cumprod值: {sqrt_alpha[0][:5] if len(sqrt_alpha.shape) > 1 else sqrt_alpha[:5]}")
-        print(f"  sqrt_one_minus_alphas_cumprod值: {sqrt_one_minus_alpha[0][:5] if len(sqrt_one_minus_alpha.shape) > 1 else sqrt_one_minus_alpha[:5]}")
-        print(f"  x_start均值和方差: {x_start.mean():.6f}, {x_start.std():.6f}")
-        print(f"  noise均值和方差: {noise.mean():.6f}, {noise.std():.6f}")
+        # # 调试：检查提取的值
+        # sqrt_alpha = self._extract_into_tensor(self.sqrt_alphas_cumprod, t, x_start.shape)
+        # sqrt_one_minus_alpha = self._extract_into_tensor(self.sqrt_one_minus_alphas_cumprod, t, x_start.shape)
+        # print(f"q_sample调试:")
+        # print(f"  t={t[0] if len(t) > 0 else t}")
+        # print(f"  sqrt_alphas_cumprod值: {sqrt_alpha[0][:5] if len(sqrt_alpha.shape) > 1 else sqrt_alpha[:5]}")
+        # print(f"  sqrt_one_minus_alphas_cumprod值: {sqrt_one_minus_alpha[0][:5] if len(sqrt_one_minus_alpha.shape) > 1 else sqrt_one_minus_alpha[:5]}")
+        # print(f"  x_start均值和方差: {x_start.mean():.6f}, {x_start.std():.6f}")
+        # print(f"  noise均值和方差: {noise.mean():.6f}, {noise.std():.6f}")
         
-        result = sqrt_alpha * x_start + sqrt_one_minus_alpha * noise
-        print(f"  结果均值和方差: {result.mean():.6f}, {result.std():.6f}")
+        # result = sqrt_alpha * x_start + sqrt_one_minus_alpha * noise
+        # print(f"  结果均值和方差: {result.mean():.6f}, {result.std():.6f}")
         
         return (
             self._extract_into_tensor(self.sqrt_alphas_cumprod, t, x_start.shape) * x_start

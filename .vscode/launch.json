@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python 调试程序: 当前文件",
+            "name": "Recomender train",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
@@ -15,15 +15,56 @@
                 "--model_name", "DiffRec_connector",
                 "--dataset", "MovieLens_1M/ML_1MGDR",
                 "--path", "../data/",
-                "--diffusion_steps", "100",
-                "--noise_schedule", "linear",
-                "--noise_scale", "0.1",
-                "--embedding_size", "64",
-                "--hidden_dims", "[512, 256]",
-                "--epoch", "100",
-                "--batch_size", "256",
+                // "--gpu", "0",
+
+                // "--diffusion_steps", "100",
+                // "--noise_schedule", "linear",
+                // "--noise_scale", "0.1",
+                // "--embedding_size", "64",
+                // "--hidden_dims", "[512, 256]",
+                // "--epoch", "100",
+                // "--batch_size", "256",
+                // "--lr", "0.001",
+                
+                "--emb_size", "10",
+                "--dims", "[1000]",
                 "--lr", "0.001",
-                "--gpu", "0"
+                "--l2", "0.0",
+                "--test_all", "1",
+                "--steps", "5",
+                "--noise_scale", "0.0001",
+                "--noise_min", "0.0001",
+                "--noise_max", "0.0005",
+                "--main_metric", "HR@20",
+                "--batch_size", "1024",
+                "--reweight", "0",
+                "--early_stop", "20"
+            ]
+        },
+        {
+            "name": "Recomender_c train",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "cwd": "${workspaceFolder}/src",
+            "console": "integratedTerminal",
+            "args": [
+                "--model_name", "DiffRec_c",
+                "--dataset", "MovieLens_1M/ML_1MGDR",
+                "--path", "../data/",
+                "--emb_size", "10",
+                "--dims", "[1000]",
+                "--lr", "0.0001",
+                "--l2", "0.0",
+                "--test_all", "1",
+                "--steps", "5",
+                "--noise_scale", "0.0001",
+                "--noise_min", "0.0001",
+                "--noise_max", "0.0005",
+                "--main_metric", "HR@20",
+                "--batch_size", "1024",
+                "--reweight", "0",
+                "--early_stop", "20"
             ]
         }
     ]
