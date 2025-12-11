@@ -234,13 +234,13 @@ class BaseRunner(object):
 		dl = DataLoader(dataset, batch_size=self.eval_batch_size, shuffle=False, num_workers=self.num_workers,
 						collate_fn=dataset.collate_batch, pin_memory=self.pin_memory)
 		iter_num = 0
-		print(dataset.model.diffusion.betas[:5])
-		print(dataset.model.diffusion.sqrt_alphas_cumprod[:5])
+		# print(dataset.model.diffusion.betas[:5])
+		# print(dataset.model.diffusion.sqrt_alphas_cumprod[:5])
 		for batch in tqdm(dl, leave=False, ncols=100, mininterval=1, desc='Predict'):
 			iter_num += 1
-			print(iter_num)
-			print(dataset.model.diffusion.betas[:5])
-			print(dataset.model.diffusion.sqrt_alphas_cumprod[:5])
+			# print(iter_num)
+			# print(dataset.model.diffusion.betas[:5])
+			# print(dataset.model.diffusion.sqrt_alphas_cumprod[:5])
 			if hasattr(dataset.model,'inference'):
 				prediction = dataset.model.inference(utils.batch_to_gpu(batch, dataset.model.device))['prediction'] # 在这里变成全0
 			else:
