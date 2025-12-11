@@ -19,12 +19,12 @@ from utils import utils
 
 # 导入扩散模型相关模块
 try:
-    from models.diffusion.GD import GDModel
+    # from models.diffusion.GD import GDModel
     from models.diffusion import DiffRec_c
     from models.diffusion import DiffRec_connector
     from models.diffusion import GDModel
-    from helpers.GDReader import GDReader
-    from helpers.GDRunner import GDRunner
+    # from helpers.GDReader import GDReader
+    # from helpers.GDRunner import GDRunner
     DIFFUSION_AVAILABLE = True
 except ImportError as e:
     DIFFUSION_AVAILABLE = False
