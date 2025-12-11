@@ -21,7 +21,7 @@ from models import DiffRec_beta
 from models import DiffRec_c
 
 def parse_global_args(parser):
-	parser.add_argument('--gpu', type=str, default='0',
+	parser.add_argument('--gpu', type=str, default='',
 						help='Set CUDA_VISIBLE_DEVICES, default for CPU only')
 	parser.add_argument('--verbose', type=int, default=logging.INFO,
 						help='Logging Level, 0, 10, ..., 50')
