@@ -157,11 +157,227 @@ class DiffRec_c(BaseModel):
     def loss(self, out_dict):
         return out_dict['loss']
 
+    # ========================================================================== #
+    #                   code from gaussian_diffusion.py                          #
+    # ========================================================================== #
+
+    def q_sample(self, x_start, t, noise=None):
+        if noise is None:
+            noise = torch.randn_like(x_start)
+        assert noise.shape == x_start.shape
+        
+        return (
+            self._extract_into_tensor(self.sqrt_alphas_cumprod, t, x_start.shape) * x_start
+            + self._extract_into_tensor(self.sqrt_one_minus_alphas_cumprod, t, x_start.shape)
+            * noise
+        )
+
+    def p_sample(self, model, x_start, steps, sampling_noise=False):
+        # 反向去噪
+        assert steps <= self.steps, "Too much steps in inference."
+        if steps == 0:
+            x_t = x_start
+        else:
+            # print('p_sample come to q_sample')
+            t = torch.tensor([steps - 1] * x_start.shape[0]).to(x_start.device)
+            x_t = self.q_sample(x_start, t)
+
+        indices = list(range(self.steps))[::-1]
+
+        if self.noise_scale == 0.:
+            for i in indices:
+                t = torch.tensor([i] * x_t.shape[0]).to(x_start.device)
+                x_t = model(x_t, t)
+            return x_t
+
+        for i in indices:
+            t = torch.tensor([i] * x_t.shape[0]).to(x_start.device)
+            out = self.p_mean_variance(model, x_t, t)
+            if sampling_noise:
+                noise = torch.randn_like(x_t)
+                nonzero_mask = (
+                    (t != 0).float().view(-1, *([1] * (len(x_t.shape) - 1)))
+                )  # no noise when t == 0
+                x_t = out["mean"] + nonzero_mask * torch.exp(0.5 * out["log_variance"]) * noise
+            else:
+                x_t = out["mean"]
+        return x_t
+
+    def q_posterior_mean_variance(self, x_start, x_t, t):
+        """
+        Compute the mean and variance of the diffusion posterior:
+            q(x_{t-1} | x_t, x_0)
+        """
+        assert x_start.shape == x_t.shape
+        posterior_mean = (
+            self._extract_into_tensor(self.posterior_mean_coef1, t, x_t.shape) * x_start
+            + self._extract_into_tensor(self.posterior_mean_coef2, t, x_t.shape) * x_t
+        )
+        posterior_variance = self._extract_into_tensor(self.posterior_variance, t, x_t.shape)
+        posterior_log_variance_clipped = self._extract_into_tensor(
+            self.posterior_log_variance_clipped, t, x_t.shape
+        )
+        assert (
+            posterior_mean.shape[0]
+            == posterior_variance.shape[0]
+            == posterior_log_variance_clipped.shape[0]
+            == x_start.shape[0]
+        )
+        return posterior_mean, posterior_variance, posterior_log_variance_clipped
+    
+    def p_mean_variance(self, model, x, t):
+        """
+        Apply the model to get p(x_{t-1} | x_t), as well as a prediction of
+        the initial x, x_0.
+        """
+        B, C = x.shape[:2]
+        assert t.shape == (B, )
+        model_output = model(x, t)
+
+        model_variance = self.posterior_variance
+        model_log_variance = self.posterior_log_variance_clipped
+
+        model_variance = self._extract_into_tensor(model_variance, t, x.shape)
+        model_log_variance = self._extract_into_tensor(model_log_variance, t, x.shape)
+        
+        # if self.mean_type == ModelMeanType.START_X:
+        #     pred_xstart = model_output
+        # elif self.mean_type == ModelMeanType.EPSILON:
+        #     pred_xstart = self._predict_xstart_from_eps(x, t, eps=model_output)
+        # else:
+        #     raise NotImplementedError(self.mean_type)
+        pred_xstart = model_output
+        
+        model_mean, _, _ = self.q_posterior_mean_variance(x_start=pred_xstart, x_t=x, t=t)
+
+        assert (
+            model_mean.shape == model_log_variance.shape == pred_xstart.shape == x.shape
+        )
+
+        return {
+            "mean": model_mean,
+            "variance": model_variance,
+            "log_variance": model_log_variance,
+            "pred_xstart": pred_xstart,
+        }
+
+    
+    def _predict_xstart_from_eps(self, x_t, t, eps):
+        assert x_t.shape == eps.shape
+        return (
+            self._extract_into_tensor(self.sqrt_recip_alphas_cumprod, t, x_t.shape) * x_t
+            - self._extract_into_tensor(self.sqrt_recipm1_alphas_cumprod, t, x_t.shape) * eps
+        )
+    
+    def SNR(self, t):
+        """
+        Compute the signal-to-noise ratio for a single timestep.
+        """
+        self.alphas_cumprod = self.alphas_cumprod.to(t.device)
+        return self.alphas_cumprod[t] / (1 - self.alphas_cumprod[t])
+    
+    def _extract_into_tensor(self, arr, timesteps, broadcast_shape):
+        """
+        Extract values from a 1-D numpy array for a batch of indices.
+
+        :param arr: the 1-D numpy array.
+        :param timesteps: a tensor of indices into the array to extract.
+        :param broadcast_shape: a larger shape of K dimensions with the batch
+                                dimension equal to the length of timesteps.
+        :return: a tensor of shape [batch_size, 1, ...] where the shape has K dims.
+        """
+        # res = th.from_numpy(arr).to(device=timesteps.device)[timesteps].float()
+        arr = arr.to(timesteps.device)
+        res = arr[timesteps].float()
+        while len(res.shape) < len(broadcast_shape):
+            res = res[..., None]
+        return res.expand(broadcast_shape)
+    
+    def see_betas(self):
+        print(f"betas: {self.betas}")
+        print(f"sqrt_alphas_cumprod: {self.sqrt_alphas_cumprod}")
+
+    def betas_from_linear_variance(steps, variance, max_beta=0.999):
+        alpha_bar = 1 - variance
+        betas = []
+        betas.append(1 - alpha_bar[0])
+        for i in range(1, steps):
+            betas.append(min(1 - alpha_bar[i] / alpha_bar[i - 1], max_beta))
+        return np.array(betas)
+
+    def betas_for_alpha_bar(num_diffusion_timesteps, alpha_bar, max_beta=0.999):
+        """
+        Create a beta schedule that discretizes the given alpha_t_bar function,
+        which defines the cumulative product of (1-beta) over time from t = [0,1].
+
+        :param num_diffusion_timesteps: the number of betas to produce.
+        :param alpha_bar: a lambda that takes an argument t from 0 to 1 and
+                        produces the cumulative product of (1-beta) up to that
+                        part of the diffusion process.
+        :param max_beta: the maximum beta to use; use values lower than 1 to
+                        prevent singularities.
+        """
+        betas = []
+        for i in range(num_diffusion_timesteps):
+            t1 = i / num_diffusion_timesteps
+            t2 = (i + 1) / num_diffusion_timesteps
+            betas.append(min(1 - alpha_bar(t2) / alpha_bar(t1), max_beta))
+        return np.array(betas)
+
+    def normal_kl(mean1, logvar1, mean2, logvar2):
+        """
+        Compute the KL divergence between two gaussians.
+
+        Shapes are automatically broadcasted, so batches can be compared to
+        scalars, among other use cases.
+        """
+        tensor = None
+        for obj in (mean1, logvar1, mean2, logvar2):
+            if isinstance(obj, torch.Tensor):
+                tensor = obj
+                break
+        assert tensor is not None, "at least one argument must be a Tensor"
+
+        # Force variances to be Tensors. Broadcasting helps convert scalars to
+        # Tensors, but it does not work for th.exp().
+        logvar1, logvar2 = [
+            x if isinstance(x, torch.Tensor) else torch.tensor(x).to(tensor)
+            for x in (logvar1, logvar2)
+        ]
+
+        return 0.5 * (
+            -1.0
+            + logvar2
+            - logvar1
+            + torch.exp(logvar1 - logvar2)
+            + ((mean1 - mean2) ** 2) * torch.exp(-logvar2)
+        )
+
+    def mean_flat(tensor):
+        """
+        Take the mean over all non-batch dimensions.
+        """
+        return tensor.mean(dim=list(range(1, len(tensor.shape))))
+    
+    # ========================================================================== #
+    #                        gaussian_diffusion code end                         #
+    # ========================================================================== #
+
     def inference(self, feed_dict):
         batch_users = feed_dict['user_id']
         batch_size = len(batch_users)
         
-        x = torch.randn(batch_size, self.corpus.n_items).to(self.device)
+        # x = torch.randn(batch_size, self.corpus.n_items).to(self.device)
+        x_start = feed_dict['vector'].float()
+        with torch.no_grad():
+            # 关键修改：使用用户历史向量作为条件
+            x = self.p_sample(
+                model=lambda xt, t: self.dnn(xt, t),
+                x_start=x_start,  # ← 使用历史向量，不是随机噪声！
+                steps=self.sampling_steps,
+                sampling_noise=True
+            ).to(self.device)
+        
         indices = list(range(self.sampling_steps))[::-1]
         
         with torch.no_grad():
