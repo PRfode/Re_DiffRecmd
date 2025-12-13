@@ -373,7 +373,7 @@ class DiffRec_c(BaseModel):
             # 关键修改：使用用户历史向量作为条件
             x = self.p_sample(
                 model=lambda xt, t: self.dnn(xt, t),
-                x_start=x_start,  # ← 使用历史向量，不是随机噪声！
+                x_start=x_start,
                 steps=self.sampling_steps,
                 sampling_noise=True
             ).to(self.device)
