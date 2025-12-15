@@ -29,6 +29,42 @@
                 "--reweight", "0",
                 "--early_stop", "50"
             ]
+        },
+        {
+            "name": "L_DiffRec_b_MovieLens_1M",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "cwd": "${workspaceFolder}/src",
+            "console": "integratedTerminal",
+            "args": [
+                "--model_name", "LDiffRec_b",
+                "--dataset", "MovieLens_1M/ML_1MGDR",
+                "--emb_size", "10",
+                "--dims", "[500, 300]",
+                "--lr", "0.00005",
+                "--l2", "0.0",
+                "--test_all", "1",
+                "--steps", "5",
+                "--noise_scale", "0.01",
+                "--noise_min", "0.001",
+                "--noise_max", "0.01",
+                "--main_metric", "HR@20",
+                "--batch_size", "200",
+                "--reweight", "1",
+                "--n_cate", "1",
+                "--in_dims", "[500, 300]",
+                "--out_dims", "[300, 500]",
+                "--act_func", "tanh",
+                "--lamda", "0.0005",
+                "--reparam", "1",
+                "--anneal_cap", "0.001", // 总loss中DNN loss的权重的最小值
+                "--anneal_steps", "500",
+                "--vae_anneal_cap", "0.2", // VAE loss 中KL散度部分的最大权重
+                "--vae_anneal_steps", "200",
+                // "--sampling_steps", "10",
+                "--early_stop", "50"
+            ]
         }
     ]
 }
