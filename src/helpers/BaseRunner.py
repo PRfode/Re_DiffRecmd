@@ -248,6 +248,7 @@ class BaseRunner(object):
 				idx = list(np.ones_like(clicked_items) * i)
 				rows.extend(idx)
 				cols.extend(clicked_items)
+			# 掩码
 			predictions[rows, cols] = -np.inf
 		return predictions
 

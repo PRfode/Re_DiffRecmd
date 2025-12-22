@@ -16,10 +16,15 @@ from models.context import *
 from models.context_seq import *
 from models.reranker import *
 from utils import utils
-
+from models import DiffRec
+from models import DiffRec_beta
+from models import DiffRec_c
+from models import LDiffRec_a
+from models import LDiffRec_b
+from models import TDiffRec_a
 
 def parse_global_args(parser):
-	parser.add_argument('--gpu', type=str, default='0',
+	parser.add_argument('--gpu', type=str, default='',
 						help='Set CUDA_VISIBLE_DEVICES, default for CPU only')
 	parser.add_argument('--verbose', type=int, default=logging.INFO,
 						help='Logging Level, 0, 10, ..., 50')
@@ -55,7 +60,7 @@ def main():
 	logging.info('Device: {}'.format(args.device))
 
 	# Read data
-	corpus_path = os.path.join(args.path, args.dataset, model_name.reader+args.data_appendix+ '.pkl')
+	corpus_path = os.path.join('../' ,args.path, args.dataset, model_name.reader+args.data_appendix+ '.pkl')
 	if not args.regenerate and os.path.exists(corpus_path):
 		logging.info('Load corpus from {}'.format(corpus_path))
 		corpus = pickle.load(open(corpus_path, 'rb'))
