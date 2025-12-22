@@ -234,7 +234,7 @@ class LDiffRec_b(BaseModel):
         
         # 7. 计算AutoEncoder损失（使用原版损失函数）
         # Lambda退火
-        if self.anneal_steps > 0:
+        if self.anneal_steps > 0: # True
             lamda = max((1. - self.update_count / self.anneal_steps) * self.lamda, self.anneal_cap)
         else:
             lamda = max(self.lamda, self.anneal_cap)
@@ -273,9 +273,7 @@ class LDiffRec_b(BaseModel):
         # 每100个batch打印一次损失信息
         if len(self.train_losses) % 100 == 0:
             print(f"\nBatch {len(self.train_losses)}: \n"
-                  f"Total Loss = {np.mean(self.train_losses[-100:]):.4f}, \n"
-                  f"AE Loss = {np.mean(self.ae_losses[-100:]):.4f}, \n"
-                  f"Diff Loss = {np.mean(self.diff_losses[-100:]):.4f}, \n"
+                  f"Total Loss = {np.mean(self.train_losses[-100:]):.4f}, AE Loss = {np.mean(self.ae_losses[-100:]):.4f}, Diff Loss = {np.mean(self.diff_losses[-100:]):.4f}, \n"
                   f"Update = {self.update_count_vae}, {self.update_count}, \n"
                   f"λ = {lamda:.4f}, Anneal = {anneal:.4f}\n")
         
@@ -395,15 +393,35 @@ class LDiffRec_b(BaseModel):
             _, batch_latent, _ = self.autoencoder.Encode(x_start)
             
             # 2. 在隐空间进行扩散采样
-            latent_recon = self.p_sample(
+            x = self.p_sample(
                 model=lambda xt, t: self.dnn(xt, t),
                 x_start=batch_latent,
                 steps=self.sampling_steps,
                 sampling_noise=True
             ).to(self.device)
             
+            # 【添加缺失的部分】：显式逐步去噪循环
+            indices = list(range(self.sampling_steps))[::-1]
+            
+            for i in indices:
+                t = torch.tensor([i] * batch_size).to(self.device)
+                pred_x0 = self.dnn(x, t)
+                pred_x0 = torch.clamp(pred_x0, -1.0, 1.0)
+                
+                model_mean = (
+                    self._extract_into_tensor(self.posterior_mean_coef1, t, x.shape) * pred_x0 +
+                    self._extract_into_tensor(self.posterior_mean_coef2, t, x.shape) * x
+                )
+                
+                if i > 0:
+                    noise = torch.randn_like(x)
+                    model_log_variance = self._extract_into_tensor(self.posterior_log_variance_clipped, t, x.shape)
+                    x = model_mean + torch.exp(0.5 * model_log_variance) * noise
+                else:
+                    x = model_mean
+            
             # 3. 解码回物品空间
-            prediction = self.autoencoder.Decode(latent_recon)
+            prediction = self.autoencoder.Decode(x)
         
         # 【Magic Fix 2】: Swap Trick (列交换)
         target_items = feed_dict['item_id'].view(-1)

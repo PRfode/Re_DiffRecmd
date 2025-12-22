@@ -21,6 +21,7 @@ from models import DiffRec_beta
 from models import DiffRec_c
 from models import LDiffRec_a
 from models import LDiffRec_b
+from models import TDiffRec_a
 
 def parse_global_args(parser):
 	parser.add_argument('--gpu', type=str, default='',

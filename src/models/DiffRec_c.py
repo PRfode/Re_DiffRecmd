@@ -46,11 +46,11 @@ class DiffRec_c(BaseModel):
         super().__init__(args, corpus)
         self.corpus = corpus
 
-        # 【Magic Fix 1】: 清空 residual_clicked_set
-        # BaseRunner 默认会Mask掉这里面的物品。但在 Leave-One-Out 模式下，
-        # 这里面存的恰恰是我们要预测的 Target (Dev/Test Item)。
-        # 所以必须清空它，防止正确答案被设为 -inf。
-        self.corpus.residual_clicked_set = defaultdict(set)
+        # # 【Magic Fix 1】: 清空 residual_clicked_set
+        # # BaseRunner 默认会Mask掉这里面的物品。但在 Leave-One-Out 模式下，
+        # # 这里面存的恰恰是我们要预测的 Target (Dev/Test Item)。
+        # # 所以必须清空它，防止正确答案被设为 -inf。
+        # self.corpus.residual_clicked_set = defaultdict(set)
 
         self.dims = eval(args.dims)
         self.norm = bool(args.norm)
