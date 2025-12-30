@@ -8,7 +8,7 @@ from models.BaseModel import BaseModel
 from collections import defaultdict
 
 # ============================================================================
-# Math Utils (Directly from Original Paper's gaussian_diffusion.py)
+# Math Utils
 # ============================================================================
 def betas_from_linear_variance(steps, variance, max_beta=0.999):
     alpha_bar = 1 - variance
@@ -274,7 +274,7 @@ class TDiffRec_b(BaseModel):
         def _get_feed_dict(self, index):
             user_id = self.data['user_id'][index]
             
-            # --- T-DiffRec Weighting Logic ---
+            # T-DiffRec Weighting Logic
             items = self.user_history_lists.get(user_id, [])
             vector = np.zeros(self.corpus.n_items, dtype=np.float32)
             
@@ -310,7 +310,7 @@ class TDiffRec_b(BaseModel):
             return feed_dict
 
 # ============================================================================
-# DNN Class (Strict Copy from original DNN.py + init_weights)
+# DNN
 # ============================================================================
 class DNN(nn.Module):
     def __init__(self, in_dims, hidden_dims, emb_size, norm=False, dropout=0.5):
@@ -330,7 +330,7 @@ class DNN(nn.Module):
             self.layers.append(nn.Linear(dims[i], dims[i+1]))
         self.drop = nn.Dropout(dropout)
         
-        # Init Weights (Important!)
+        # Init Weights
         self.init_weights()
         
     def init_weights(self):

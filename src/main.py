@@ -16,12 +16,12 @@ from models.context import *
 from models.context_seq import *
 from models.reranker import *
 from utils import utils
-from models import DiffRec
-from models import DiffRec_beta
+# from models import DiffRec
+# from models import DiffRec_beta
 from models import DiffRec_c
-from models import LDiffRec_a
+# from models import LDiffRec_a
 from models import LDiffRec_b
-from models import TDiffRec_a
+from models import TDiffRec_b
 
 def parse_global_args(parser):
 	parser.add_argument('--gpu', type=str, default='',
