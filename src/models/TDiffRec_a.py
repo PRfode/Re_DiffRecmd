@@ -23,7 +23,7 @@ def mean_flat(tensor):
     return tensor.mean(dim=list(range(1, len(tensor.shape))))
 
 # ============================================================================
-# 核心模型：T_DiffRec (基于你成功的 DiffRec_c 逻辑复刻)
+# 核心模型：T_DiffRec
 # ============================================================================
 class TDiffRec_a(BaseModel):
     reader = 'BaseReader'
@@ -163,7 +163,7 @@ class TDiffRec_a(BaseModel):
         final_loss = torch.mean(losses / pt)
         return {'loss': final_loss, 'prediction': torch.zeros(batch_size, 1, device=self.device)}
     # ========================================================================== #
-    #                   code from gaussian_diffusion.py                          #
+    # code from gaussian_diffusion.py
     # ========================================================================== #
 
     def q_sample(self, x_start, t, noise=None):

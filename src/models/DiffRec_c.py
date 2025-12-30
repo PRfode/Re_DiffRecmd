@@ -7,9 +7,6 @@ import math
 from models.BaseModel import BaseModel
 from collections import defaultdict
 
-# ============================================================================
-# 辅助函数
-# ============================================================================
 def betas_from_linear_variance(steps, variance, max_beta=0.999):
     alpha_bar = 1 - variance
     betas = []
@@ -22,7 +19,7 @@ def mean_flat(tensor):
     return tensor.mean(dim=list(range(1, len(tensor.shape))))
 
 # ============================================================================
-# 核心模型：DiffRec_c
+# DiffRec_c
 # ============================================================================
 class DiffRec_c(BaseModel):
     reader = 'BaseReader'
@@ -45,12 +42,6 @@ class DiffRec_c(BaseModel):
     def __init__(self, args, corpus):
         super().__init__(args, corpus)
         self.corpus = corpus
-
-        # # 【Magic Fix 1】: 清空 residual_clicked_set
-        # # BaseRunner 默认会Mask掉这里面的物品。但在 Leave-One-Out 模式下，
-        # # 这里面存的恰恰是我们要预测的 Target (Dev/Test Item)。
-        # # 所以必须清空它，防止正确答案被设为 -inf。
-        # self.corpus.residual_clicked_set = defaultdict(set)
 
         self.dims = eval(args.dims)
         self.norm = bool(args.norm)
@@ -158,7 +149,7 @@ class DiffRec_c(BaseModel):
         return out_dict['loss']
 
     # ========================================================================== #
-    #                   code from gaussian_diffusion.py                          #
+    # code from gaussian_diffusion.py
     # ========================================================================== #
 
     def q_sample(self, x_start, t, noise=None):
@@ -239,7 +230,7 @@ class DiffRec_c(BaseModel):
 
         model_variance = self._extract_into_tensor(model_variance, t, x.shape)
         model_log_variance = self._extract_into_tensor(model_log_variance, t, x.shape)
-        
+
         # if self.mean_type == ModelMeanType.START_X:
         #     pred_xstart = model_output
         # elif self.mean_type == ModelMeanType.EPSILON:
@@ -247,7 +238,7 @@ class DiffRec_c(BaseModel):
         # else:
         #     raise NotImplementedError(self.mean_type)
         pred_xstart = model_output
-        
+
         model_mean, _, _ = self.q_posterior_mean_variance(x_start=pred_xstart, x_t=x, t=t)
 
         assert (
@@ -360,7 +351,7 @@ class DiffRec_c(BaseModel):
         return tensor.mean(dim=list(range(1, len(tensor.shape))))
     
     # ========================================================================== #
-    #                        gaussian_diffusion code end                         #
+    # gaussian_diffusion code end
     # ========================================================================== #
 
     def inference(self, feed_dict):
@@ -368,9 +359,9 @@ class DiffRec_c(BaseModel):
         batch_size = len(batch_users)
         
         # x = torch.randn(batch_size, self.corpus.n_items).to(self.device)
+        # 使用历史向量加噪作为起始
         x_start = feed_dict['vector'].float()
         with torch.no_grad():
-            # 关键修改：使用用户历史向量作为条件
             x = self.p_sample(
                 model=lambda xt, t: self.dnn(xt, t),
                 x_start=x_start,
@@ -398,21 +389,14 @@ class DiffRec_c(BaseModel):
                 else:
                     x = model_mean
 
-        # 【Magic Fix 2】: Swap Trick (列交换)
-        
-        # 1. 获取目标 Item ID，并强制展平为 [Batch_Size]
-        # 使用 .view(-1) 确保它是 1D 的，解决 RuntimeError
-        target_items = feed_dict['item_id'].view(-1) 
-        
-        # 2. 取出第 0 列的分数 (备份)
+        # Swap Trick
+        target_items = feed_dict['item_id'].view(-1)
+        # 取出第 0 列的分数 (备份)
         col0_scores = x[:, 0].clone()
-        
-        # 3. 取出目标列的分数
+        # 取出目标列的分数
         batch_indices = torch.arange(batch_size).to(self.device)
         target_scores = x[batch_indices, target_items]
-        
-        # 4. 交换
-        # 现在 target_scores 是 [Batch_Size]，x[:, 0] 也是 [Batch_Size]，形状匹配了
+        # 交换
         x[:, 0] = target_scores
         x[batch_indices, target_items] = col0_scores
 

@@ -38,16 +38,15 @@ class DiffRec(BaseModel):
         self.sampling_steps = args.sampling_steps if args.sampling_steps > 0 else self.steps
         self.reweight = bool(args.reweight)
         
-        # 强制设置 test_all 为 1，因为 DiffRec 一次性生成所有物品的评分
+        # 强制设置 test_all 为 1
+        # DiffRec 一次性生成所有物品的评分
         self.test_all = 1 
 
-        # 构建 DNN
         self.dnn = DNN(corpus.n_items, self.dims, self.emb_size, self.norm)
-        
-        # 构建 Diffusion 参数
+
         self._build_diffusion_params()
-        
-        # 重要性采样状态维护
+
+        # 重要性采样状态
         self.history_num_per_term = 10
         self.register_buffer('Lt_history', torch.zeros(self.steps, self.history_num_per_term, dtype=torch.float64))
         self.register_buffer('Lt_count', torch.zeros(self.steps, dtype=torch.long))
@@ -59,11 +58,11 @@ class DiffRec(BaseModel):
         if self.noise_scale == 0:
             self.betas = torch.tensor([0.0] * self.steps).float().to(self.device)
         else:
-            # Linear-var schedule
+            # Linear schedule
             start = self.noise_scale * self.noise_min
             end = self.noise_scale * self.noise_max
             betas = np.linspace(start, end, self.steps, dtype=np.float64)
-            # Beta fixed trick (from original paper)
+            # Beta trick (from original paper)
             betas[0] = 0.00001
             self.register_buffer('betas', torch.tensor(betas).float())
         
@@ -72,8 +71,7 @@ class DiffRec(BaseModel):
         self.register_buffer('alphas_cumprod', alphas_cumprod)
         self.register_buffer('sqrt_alphas_cumprod', torch.sqrt(alphas_cumprod))
         self.register_buffer('sqrt_one_minus_alphas_cumprod', torch.sqrt(1.0 - alphas_cumprod))
-        
-        # 计算后验分布参数 (用于推断)
+
         alphas_cumprod_prev = torch.cat([torch.tensor([1.0]).to(self.device), alphas_cumprod[:-1]])
         self.register_buffer('posterior_variance', self.betas * (1.0 - alphas_cumprod_prev) / (1.0 - alphas_cumprod))
         self.register_buffer('posterior_mean_coef1', self.betas * torch.sqrt(alphas_cumprod_prev) / (1.0 - alphas_cumprod))
@@ -82,7 +80,6 @@ class DiffRec(BaseModel):
     def _sample_timesteps(self, batch_size):
         """重要性采样时间步 t"""
         if self.reweight:
-            # 检查是否已有足够的历史 loss
             if not (self.Lt_count == self.history_num_per_term).all():
                 return torch.randint(0, self.steps, (batch_size,), device=self.device).long(), torch.ones(batch_size, device=self.device)
             
@@ -108,26 +105,23 @@ class DiffRec(BaseModel):
         x_start = feed_dict['vector'].float() # [batch_size, n_items]
         batch_size = x_start.shape[0]
         
-        # 1. 采样时间步
+        # 采样时间步
         ts, pt = self._sample_timesteps(batch_size)
         
-        # 2. 加噪 q_sample
+        # 加噪 q_sample
         noise = torch.randn_like(x_start)
         x_t = (
             self._extract_into_tensor(self.sqrt_alphas_cumprod, ts, x_start.shape) * x_start +
             self._extract_into_tensor(self.sqrt_one_minus_alphas_cumprod, ts, x_start.shape) * noise
         )
         
-        # 3. 模型预测
+        # 模型预测
         predicted_x_start = self.dnn(x_t, ts)
         
-        # 4. 计算 MSE Loss
-        # ReChorus 的 BaseRunner 会调用 loss() 方法，但 DiffRec 的 loss 计算与 sampling 紧密相关
-        # 所以我们将主要计算放在 forward，loss() 方法只负责返回预计算好的值
-        
+        # 计算 MSE Loss
         mse = torch.mean((x_start - predicted_x_start) ** 2, dim=-1) # [batch_size]
         
-        # 5. Reweight Loss
+        # Reweight Loss
         if self.reweight:
             # SNR weight (mean_type == x0)
             snr = self.alphas_cumprod[ts] / (1 - self.alphas_cumprod[ts])
@@ -140,8 +134,7 @@ class DiffRec(BaseModel):
             
         losses = weight * mse
         
-        # 6. 更新 Importance Sampling 历史 (Side Effect)
-        # 注意：这里需要 detach 以避免影响梯度图
+        # 更新 Importance Sampling 历史
         with torch.no_grad():
             for t, loss_val in zip(ts, losses):
                 if self.Lt_count[t] == self.history_num_per_term:
@@ -150,15 +143,13 @@ class DiffRec(BaseModel):
                     self.Lt_history[t, self.Lt_count[t]] = loss_val
                     self.Lt_count[t] += 1
 
-        # 返回 Loss 供 BaseRunner 使用 (需除以 pt)
+        # 返回 Loss
         final_loss = torch.mean(losses / pt)
         return {'loss': final_loss,
-            # BaseRunner 需要 prediction 键，形状要和 item_id 对应 [batch, 1]
             'prediction': torch.zeros(batch_size, 1, device=self.device)
                 }
 
     def loss(self, out_dict):
-        # Loss 已经在 forward 中计算完毕
         return out_dict['loss']
 
     def inference(self, feed_dict):
@@ -222,27 +213,19 @@ class DiffRec(BaseModel):
             # 测试集：BaseRunner 默认也是按 Batch 遍历，但 DiffRec 需要构建历史交互向量。
             
             if phase == 'train':
-                # 训练时，样本是 unique users
                 users = list(corpus.train_clicked_set.keys())
             else:
-                # 测试时，样本也是 user
                 users = corpus.data_df[phase]['user_id'].unique().tolist()
-            
-            # 【关键修改】：将 self.data 包装成字典，以兼容 BaseRunner
+
             self.data = {'user_id': users}
 
         def __len__(self):
-            # 【关键修改】：从字典中获取长度
             return len(self.data['user_id'])
 
         def _get_feed_dict(self, index):
-            # 【关键修改】：从字典中获取 user_id
             user_id = self.data['user_id'][index]
-            
-            # 构建 Multi-Hot 交互向量 (Ground Truth x_0)
             clicked_items = list(self.corpus.train_clicked_set.get(user_id, []))
-            
-            # 构造 Dense Vector 
+
             vector = np.zeros(self.corpus.n_items, dtype=np.float32)
             vector[clicked_items] = 1.0
             
@@ -254,7 +237,6 @@ class DiffRec(BaseModel):
             return feed_dict
         
         def collate_batch(self, feed_dicts):
-            # 保持不变，或者使用之前修复 np.object 问题的版本
             feed_dict = {}
             feed_dict['user_id'] = torch.tensor([d['user_id'] for d in feed_dicts])
             vectors = np.array([d['vector'] for d in feed_dicts])
@@ -265,8 +247,6 @@ class DiffRec(BaseModel):
 
             return feed_dict
 
-
-# --- DNN 辅助类 ---
 class DNN(nn.Module):
     def __init__(self, in_dims, hidden_dims, emb_size, norm=False, dropout=0.5):
         super(DNN, self).__init__()
@@ -283,7 +263,6 @@ class DNN(nn.Module):
         )
         
         # Input: Item_num + Time_Emb
-        # 这里实现一个简单的 MLP 结构，类似于原论文
         dims = [in_dims + emb_size] + hidden_dims + [in_dims]
         
         self.layers = nn.ModuleList()
@@ -293,9 +272,6 @@ class DNN(nn.Module):
         self.drop = nn.Dropout(dropout)
         
     def forward(self, x, timesteps):
-        # x: [batch, n_items]
-        # timesteps: [batch]
-        
         # 1. 计算 Time Embedding
         time_emb = self._timestep_embedding(timesteps, self.emb_size).to(x.device)
         time_emb = self.time_emb(time_emb)
@@ -312,7 +288,7 @@ class DNN(nn.Module):
         for i, layer in enumerate(self.layers):
             h = layer(h)
             if i != len(self.layers) - 1:
-                h = torch.tanh(h) # DiffRec 论文使用 Tanh
+                h = torch.tanh(h) # 论文使用 Tanh
                 
         return h
 

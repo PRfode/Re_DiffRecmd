@@ -5,7 +5,6 @@ import numpy as np
 import math
 from models.BaseModel import BaseModel
 
-# --- 辅助函数：正确的 Linear Variance 调度计算 ---
 def betas_from_linear_variance(steps, variance, max_beta=0.999):
     alpha_bar = 1 - variance
     betas = []
@@ -54,7 +53,7 @@ class DiffRec_beta(BaseModel):
         # 构建 Diffusion 参数
         self._build_diffusion_params()
         
-        # 重要性采样状态维护
+        # 重要性采样
         self.history_num_per_term = 10
         self.register_buffer('Lt_history', torch.zeros(self.steps, self.history_num_per_term, dtype=torch.float64))
         self.register_buffer('Lt_count', torch.zeros(self.steps, dtype=torch.long))
@@ -62,20 +61,17 @@ class DiffRec_beta(BaseModel):
         self.apply(self.init_weights)
 
     def _build_diffusion_params(self):
-        """【关键修复】预计算扩散过程参数，使用 Linear Variance Schedule"""
         if self.noise_scale == 0:
             self.betas = torch.tensor([0.0] * self.steps).float().to(self.device)
         else:
-            # Linear-var schedule
+            # Linear schedule
             start = self.noise_scale * self.noise_min
             end = self.noise_scale * self.noise_max
             
-            # 1. 先生成线性的方差序列
+            # 先生成线性的方差序列
             map_variance = np.linspace(start, end, self.steps, dtype=np.float64)
-            # 2. 再将方差转换为 Beta
+            # 再将方差转换为 Beta
             betas = betas_from_linear_variance(self.steps, map_variance)
-            
-            # Beta fixed trick (from original paper)
             betas[0] = 0.00001
             self.register_buffer('betas', torch.tensor(betas).float())
         
@@ -157,10 +153,7 @@ class DiffRec_beta(BaseModel):
             for i in indices:
                 t = torch.tensor([i] * batch_size).to(self.device)
                 pred_x0 = self.dnn(x, t)
-                
-                # 【关键优化】增加 Clamping，防止预测值发散，提升稳定性
-                # 训练目标是 0/1，所以限制在 [0, 1] 或 [-1, 1] 之间是合理的
-                # 原论文使用 x0-prediction, 这里稍微放宽一点范围防止梯度截断太死
+
                 pred_x0 = torch.clamp(pred_x0, -1.0, 1.0)
                 
                 model_mean = (
