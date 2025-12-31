@@ -1,0 +1,250 @@
+INFO:root:Namespace(model_name='LDiffRec_a', model_mode='')
+INFO:root:--------------------------------------------- BEGIN: 2025-12-13 16:34:37 ---------------------------------------------
+INFO:root:
+===========================================
+ Arguments          | Values               
+===========================================
+ act_func           | tanh                
+ anneal_cap         | 0.005               
+ anneal_steps       | 500                 
+ batch_size         | 400                 
+ data_appendix      |                     
+ dataset            | MovieLens_1M/ML_1...
+ dims               | [300]               
+ early_stop         | 50                  
+ emb_size           | 10                  
+ epoch              | 200                 
+ eval_batch_size    | 256                 
+ gpu                |                     
+ in_dims            | [300]               
+ l2                 | 0.0                 
+ lamda              | 0.03                
+ lr                 | 5e-05               
+ main_metric        | HR@20               
+ n_cate             | 1                   
+ noise_max          | 0.01                
+ noise_min          | 0.001               
+ noise_scale        | 0.01                
+ norm               | 0                   
+ num_workers        | 5                   
+ optimizer          | Adam                
+ out_dims           | []                  
+ random_seed        | 0                   
+ reparam            | 1                   
+ reweight           | 1                   
+ sampling_steps     | 10                  
+ save_final_results | 1                   
+ steps              | 5                   
+ topk               | 5,10,20,50          
+ vae_anneal_cap     | 0.3                 
+ vae_anneal_steps   | 200                 
+===========================================
+INFO:root:Device: cpu
+INFO:root:Load corpus from ../data/MovieLens_1M/ML_1MGDR\BaseReader.pkl
+INFO:root:#params: 2740473
+INFO:root:LDiffRec_a(
+  (autoencoder): AutoEncoder(
+    (encoder_layers): ModuleList(
+      (0): Linear(in_features=3953, out_features=300, bias=True)
+    )
+    (fc_mu): Linear(in_features=300, out_features=300, bias=True)
+    (fc_logvar): Linear(in_features=300, out_features=300, bias=True)
+    (decoder_layers): ModuleList(
+      (0): Linear(in_features=300, out_features=3953, bias=True)
+    )
+  )
+  (dnn): DNN(
+    (time_emb): Sequential(
+      (0): Linear(in_features=10, out_features=10, bias=True)
+      (1): SiLU()
+      (2): Linear(in_features=10, out_features=10, bias=True)
+    )
+    (layers): ModuleList(
+      (0): Linear(in_features=310, out_features=300, bias=True)
+      (1): Linear(in_features=300, out_features=300, bias=True)
+    )
+    (drop): Dropout(p=0.5, inplace=False)
+  )
+)
+INFO:root:Namespace(model_name='LDiffRec_a', model_mode='')
+INFO:root:--------------------------------------------- BEGIN: 2025-12-13 16:39:06 ---------------------------------------------
+INFO:root:
+===========================================
+ Arguments          | Values               
+===========================================
+ act_func           | tanh                
+ anneal_cap         | 0.005               
+ anneal_steps       | 500                 
+ batch_size         | 400                 
+ data_appendix      |                     
+ dataset            | MovieLens_1M/ML_1...
+ dims               | [300]               
+ early_stop         | 50                  
+ emb_size           | 10                  
+ epoch              | 200                 
+ eval_batch_size    | 256                 
+ gpu                |                     
+ in_dims            | [300]               
+ l2                 | 0.0                 
+ lamda              | 0.03                
+ lr                 | 5e-05               
+ main_metric        | HR@20               
+ n_cate             | 1                   
+ noise_max          | 0.01                
+ noise_min          | 0.001               
+ noise_scale        | 0.01                
+ norm               | 0                   
+ num_workers        | 5                   
+ optimizer          | Adam                
+ out_dims           | []                  
+ random_seed        | 0                   
+ reparam            | 1                   
+ reweight           | 1                   
+ sampling_steps     | 10                  
+ save_final_results | 1                   
+ steps              | 5                   
+ topk               | 5,10,20,50          
+ vae_anneal_cap     | 0.3                 
+ vae_anneal_steps   | 200                 
+===========================================
+INFO:root:Device: cpu
+INFO:root:Load corpus from ../data/MovieLens_1M/ML_1MGDR\BaseReader.pkl
+INFO:root:#params: 2740473
+INFO:root:LDiffRec_a(
+  (autoencoder): AutoEncoder(
+    (encoder_layers): ModuleList(
+      (0): Linear(in_features=3953, out_features=300, bias=True)
+    )
+    (fc_mu): Linear(in_features=300, out_features=300, bias=True)
+    (fc_logvar): Linear(in_features=300, out_features=300, bias=True)
+    (decoder_layers): ModuleList(
+      (0): Linear(in_features=300, out_features=3953, bias=True)
+    )
+  )
+  (dnn): DNN(
+    (time_emb): Sequential(
+      (0): Linear(in_features=10, out_features=10, bias=True)
+      (1): SiLU()
+      (2): Linear(in_features=10, out_features=10, bias=True)
+    )
+    (layers): ModuleList(
+      (0): Linear(in_features=310, out_features=300, bias=True)
+      (1): Linear(in_features=300, out_features=300, bias=True)
+    )
+    (drop): Dropout(p=0.5, inplace=False)
+  )
+)
+INFO:root:Namespace(model_name='LDiffRec_a', model_mode='')
+INFO:root:--------------------------------------------- BEGIN: 2025-12-13 16:40:51 ---------------------------------------------
+INFO:root:
+===========================================
+ Arguments          | Values               
+===========================================
+ act_func           | tanh                
+ anneal_cap         | 0.005               
+ anneal_steps       | 500                 
+ batch_size         | 400                 
+ data_appendix      |                     
+ dataset            | MovieLens_1M/ML_1...
+ dims               | [300]               
+ early_stop         | 50                  
+ emb_size           | 10                  
+ epoch              | 200                 
+ eval_batch_size    | 256                 
+ gpu                |                     
+ in_dims            | [300]               
+ l2                 | 0.0                 
+ lamda              | 0.03                
+ lr                 | 5e-05               
+ main_metric        | HR@20               
+ n_cate             | 1                   
+ noise_max          | 0.01                
+ noise_min          | 0.001               
+ noise_scale        | 0.01                
+ norm               | 0                   
+ num_workers        | 5                   
+ optimizer          | Adam                
+ out_dims           | []                  
+ random_seed        | 0                   
+ reparam            | 1                   
+ reweight           | 1                   
+ sampling_steps     | 5                   
+ save_final_results | 1                   
+ steps              | 5                   
+ topk               | 5,10,20,50          
+ vae_anneal_cap     | 0.3                 
+ vae_anneal_steps   | 200                 
+===========================================
+INFO:root:Device: cpu
+INFO:root:Load corpus from ../data/MovieLens_1M/ML_1MGDR\BaseReader.pkl
+INFO:root:#params: 2740473
+INFO:root:LDiffRec_a(
+  (autoencoder): AutoEncoder(
+    (encoder_layers): ModuleList(
+      (0): Linear(in_features=3953, out_features=300, bias=True)
+    )
+    (fc_mu): Linear(in_features=300, out_features=300, bias=True)
+    (fc_logvar): Linear(in_features=300, out_features=300, bias=True)
+    (decoder_layers): ModuleList(
+      (0): Linear(in_features=300, out_features=3953, bias=True)
+    )
+  )
+  (dnn): DNN(
+    (time_emb): Sequential(
+      (0): Linear(in_features=10, out_features=10, bias=True)
+      (1): SiLU()
+      (2): Linear(in_features=10, out_features=10, bias=True)
+    )
+    (layers): ModuleList(
+      (0): Linear(in_features=310, out_features=300, bias=True)
+      (1): Linear(in_features=300, out_features=300, bias=True)
+    )
+    (drop): Dropout(p=0.5, inplace=False)
+  )
+)
+INFO:root:Test Before Training: (HR@5:0.0013,NDCG@5:0.0007,HR@10:0.0028,NDCG@10:0.0012,HR@20:0.0053,NDCG@20:0.0018,HR@50:0.0138,NDCG@50:0.0035)
+INFO:root:Optimizer: Adam
+INFO:root:Epoch 1     loss=850.4340 [33.1 s]	dev=(HR@20:0.0073,NDCG@20:0.0026) [33.0 s] *
+INFO:root:Epoch 2     loss=764.6931 [26.3 s]	dev=(HR@20:0.0073,NDCG@20:0.0025) [25.9 s] *
+INFO:root:Epoch 3     loss=693.6238 [26.3 s]	dev=(HR@20:0.0083,NDCG@20:0.0030) [31.0 s] *
+INFO:root:Epoch 4     loss=618.0430 [30.9 s]	dev=(HR@20:0.0113,NDCG@20:0.0036) [29.9 s] *
+INFO:root:Epoch 5     loss=544.2515 [25.8 s]	dev=(HR@20:0.0156,NDCG@20:0.0062) [26.3 s] *
+INFO:root:Epoch 6     loss=478.9041 [25.5 s]	dev=(HR@20:0.0162,NDCG@20:0.0061) [31.5 s] *
+INFO:root:Epoch 7     loss=420.7832 [29.2 s]	dev=(HR@20:0.0255,NDCG@20:0.0096) [27.0 s] *
+INFO:root:Epoch 8     loss=376.6853 [31.8 s]	dev=(HR@20:0.0267,NDCG@20:0.0105) [30.6 s] *
+INFO:root:Epoch 9     loss=339.8068 [29.6 s]	dev=(HR@20:0.0298,NDCG@20:0.0116) [31.2 s] *
+INFO:root:Epoch 10    loss=308.0171 [29.5 s]	dev=(HR@20:0.0318,NDCG@20:0.0118) [30.9 s] *
+INFO:root:Epoch 11    loss=283.8981 [29.3 s]	dev=(HR@20:0.0330,NDCG@20:0.0133) [30.0 s] *
+INFO:root:Epoch 12    loss=265.2576 [29.6 s]	dev=(HR@20:0.0336,NDCG@20:0.0127) [30.7 s] *
+INFO:root:Epoch 13    loss=246.8267 [30.4 s]	dev=(HR@20:0.0406,NDCG@20:0.0150) [29.5 s] *
+INFO:root:Epoch 14    loss=234.3535 [29.1 s]	dev=(HR@20:0.0399,NDCG@20:0.0153) [33.1 s]
+INFO:root:Epoch 15    loss=218.5867 [29.5 s]	dev=(HR@20:0.0426,NDCG@20:0.0165) [28.9 s] *
+INFO:root:Epoch 16    loss=208.8137 [25.2 s]	dev=(HR@20:0.0421,NDCG@20:0.0163) [31.5 s]
+INFO:root:Epoch 17    loss=197.0414 [28.9 s]	dev=(HR@20:0.0424,NDCG@20:0.0163) [31.8 s]
+INFO:root:Epoch 18    loss=183.8360 [25.4 s]	dev=(HR@20:0.0434,NDCG@20:0.0155) [26.9 s] *
+INFO:root:Epoch 19    loss=174.0405 [25.0 s]	dev=(HR@20:0.0428,NDCG@20:0.0171) [32.3 s]
+INFO:root:Epoch 20    loss=163.1927 [30.3 s]	dev=(HR@20:0.0452,NDCG@20:0.0170) [34.1 s] *
+INFO:root:Epoch 21    loss=151.3865 [26.4 s]	dev=(HR@20:0.0403,NDCG@20:0.0155) [26.7 s]
+INFO:root:Epoch 22    loss=140.6665 [26.4 s]	dev=(HR@20:0.0461,NDCG@20:0.0175) [35.5 s] *
+INFO:root:Epoch 23    loss=130.9152 [28.3 s]	dev=(HR@20:0.0487,NDCG@20:0.0188) [29.2 s] *
+INFO:root:Epoch 24    loss=119.8048 [27.7 s]	dev=(HR@20:0.0442,NDCG@20:0.0170) [29.4 s]
+INFO:root:Epoch 25    loss=109.4987 [28.6 s]	dev=(HR@20:0.0438,NDCG@20:0.0168) [31.4 s]
+INFO:root:Epoch 26    loss=97.1934 [30.3 s]	dev=(HR@20:0.0515,NDCG@20:0.0200) [32.1 s] *
+INFO:root:Epoch 27    loss=90.1892 [29.2 s]	dev=(HR@20:0.0461,NDCG@20:0.0175) [33.9 s]
+INFO:root:Epoch 28    loss=87.7310 [28.7 s]	dev=(HR@20:0.0467,NDCG@20:0.0181) [30.8 s]
+INFO:root:Epoch 29    loss=86.2290 [31.2 s]	dev=(HR@20:0.0499,NDCG@20:0.0192) [30.4 s]
+INFO:root:Epoch 30    loss=85.3349 [29.6 s]	dev=(HR@20:0.0502,NDCG@20:0.0194) [33.8 s]
+INFO:root:Epoch 31    loss=84.8838 [29.4 s]	dev=(HR@20:0.0520,NDCG@20:0.0200) [31.1 s] *
+INFO:root:Epoch 32    loss=83.4412 [30.5 s]	dev=(HR@20:0.0520,NDCG@20:0.0193) [32.3 s] *
+INFO:root:Epoch 33    loss=82.8552 [25.8 s]	dev=(HR@20:0.0505,NDCG@20:0.0193) [30.2 s]
+INFO:root:Epoch 34    loss=82.3839 [26.9 s]	dev=(HR@20:0.0577,NDCG@20:0.0222) [25.9 s] *
+INFO:root:Epoch 35    loss=81.5653 [25.1 s]	dev=(HR@20:0.0577,NDCG@20:0.0218) [32.2 s] *
+INFO:root:Epoch 36    loss=81.3552 [28.3 s]	dev=(HR@20:0.0554,NDCG@20:0.0215) [30.3 s]
+INFO:root:Epoch 37    loss=80.5356 [31.6 s]	dev=(HR@20:0.0491,NDCG@20:0.0184) [31.9 s]
+INFO:root:Epoch 38    loss=80.3682 [29.8 s]	dev=(HR@20:0.0570,NDCG@20:0.0218) [31.1 s]
+INFO:root:Epoch 39    loss=80.0349 [30.9 s]	dev=(HR@20:0.0547,NDCG@20:0.0208) [32.0 s]
+INFO:root:Epoch 40    loss=79.7747 [30.8 s]	dev=(HR@20:0.0557,NDCG@20:0.0201) [29.1 s]
+INFO:root:Epoch 41    loss=79.0934 [30.6 s]	dev=(HR@20:0.0645,NDCG@20:0.0240) [28.0 s] *
+INFO:root:Epoch 42    loss=78.7718 [27.1 s]	dev=(HR@20:0.0605,NDCG@20:0.0240) [31.3 s]
+INFO:root:Epoch 43    loss=78.4279 [26.7 s]	dev=(HR@20:0.0605,NDCG@20:0.0218) [26.0 s]
+INFO:root:Epoch 44    loss=77.9869 [24.0 s]	dev=(HR@20:0.0617,NDCG@20:0.0222) [28.4 s]

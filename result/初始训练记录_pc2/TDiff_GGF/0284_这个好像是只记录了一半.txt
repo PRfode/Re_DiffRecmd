@@ -1,0 +1,98 @@
+INFO:root:Namespace(model_name='TDiffRec_a', model_mode='')
+INFO:root:--------------------------------------------- BEGIN: 2025-12-25 13:43:38 ---------------------------------------------
+INFO:root:
+===========================================
+ Arguments          | Values               
+===========================================
+ batch_size         | 400                 
+ data_appendix      |                     
+ dataset            | Grocery_and_Gourm...
+ dims               | [1000]              
+ early_stop         | 30                  
+ emb_size           | 10                  
+ epoch              | 200                 
+ eval_batch_size    | 256                 
+ gpu                |                     
+ l2                 | 0.0001              
+ lr                 | 0.0005              
+ main_metric        | HR@20               
+ noise_max          | 0.005               
+ noise_min          | 0.0005              
+ noise_scale        | 0.005               
+ norm               | 0                   
+ num_workers        | 5                   
+ optimizer          | Adam                
+ random_seed        | 0                   
+ reweight           | 0                   
+ sampling_steps     | 0                   
+ save_final_results | 1                   
+ steps              | 5                   
+ topk               | 5,10,20,50          
+ w_max              | 1.0                 
+ w_min              | 0.2                 
+===========================================
+INFO:root:Device: cpu
+INFO:root:Load corpus from ../data/Grocery_and_Gourmet_Food\BaseReader.pkl
+INFO:root:#params: 17447934
+INFO:root:TDiffRec_a(
+  (dnn): DNN(
+    (time_emb): Sequential(
+      (0): Linear(in_features=10, out_features=10, bias=True)
+      (1): SiLU()
+      (2): Linear(in_features=10, out_features=10, bias=True)
+    )
+    (layers): ModuleList(
+      (0): Linear(in_features=8724, out_features=1000, bias=True)
+      (1): Linear(in_features=1000, out_features=8714, bias=True)
+    )
+    (drop): Dropout(p=0.5, inplace=False)
+  )
+)
+INFO:root:Test Before Training: (HR@5:0.0006,NDCG@5:0.0004,HR@10:0.0016,NDCG@10:0.0007,HR@20:0.0031,NDCG@20:0.0011,HR@50:0.0060,NDCG@50:0.0016)
+INFO:root:Optimizer: Adam
+INFO:root:Epoch 1     loss=0.000488 [17.4 s]	dev=(HR@20:0.0297,NDCG@20:0.0116) [19.0 s] *
+INFO:root:Epoch 2     loss=0.000408 [17.5 s]	dev=(HR@20:0.0283,NDCG@20:0.0114) [19.3 s]
+INFO:root:Epoch 3     loss=0.000408 [17.4 s]	dev=(HR@20:0.0343,NDCG@20:0.0129) [19.2 s] *
+INFO:root:Epoch 4     loss=0.000408 [17.6 s]	dev=(HR@20:0.0313,NDCG@20:0.0122) [19.2 s]
+INFO:root:Epoch 5     loss=0.000408 [17.2 s]	dev=(HR@20:0.0343,NDCG@20:0.0129) [18.7 s] *
+INFO:root:Epoch 6     loss=0.000408 [17.2 s]	dev=(HR@20:0.0336,NDCG@20:0.0127) [19.1 s]
+INFO:root:Epoch 7     loss=0.000408 [21.6 s]	dev=(HR@20:0.0295,NDCG@20:0.0117) [25.8 s]
+INFO:root:Epoch 8     loss=0.000408 [21.7 s]	dev=(HR@20:0.0336,NDCG@20:0.0128) [25.2 s]
+INFO:root:Epoch 9     loss=0.000408 [21.2 s]	dev=(HR@20:0.0315,NDCG@20:0.0123) [25.7 s]
+INFO:root:Epoch 10    loss=0.000408 [21.7 s]	dev=(HR@20:0.0315,NDCG@20:0.0122) [19.9 s]
+INFO:root:Epoch 11    loss=0.000408 [17.0 s]	dev=(HR@20:0.0317,NDCG@20:0.0122) [18.9 s]
+INFO:root:Epoch 12    loss=0.000408 [17.4 s]	dev=(HR@20:0.0339,NDCG@20:0.0128) [18.9 s]
+INFO:root:Epoch 13    loss=0.000408 [17.4 s]	dev=(HR@20:0.0311,NDCG@20:0.0123) [18.9 s]
+INFO:root:Epoch 14    loss=0.000408 [17.4 s]	dev=(HR@20:0.0312,NDCG@20:0.0121) [19.6 s]
+INFO:root:Epoch 15    loss=0.000408 [18.9 s]	dev=(HR@20:0.0277,NDCG@20:0.0113) [19.7 s]
+INFO:root:Epoch 16    loss=0.000408 [17.6 s]	dev=(HR@20:0.0309,NDCG@20:0.0122) [20.0 s]
+INFO:root:Epoch 17    loss=0.000408 [18.2 s]	dev=(HR@20:0.0339,NDCG@20:0.0127) [19.3 s]
+INFO:root:Epoch 18    loss=0.000408 [17.2 s]	dev=(HR@20:0.0316,NDCG@20:0.0123) [18.9 s]
+INFO:root:Epoch 19    loss=0.000408 [17.0 s]	dev=(HR@20:0.0343,NDCG@20:0.0129) [18.9 s] *
+INFO:root:Epoch 20    loss=0.000407 [16.8 s]	dev=(HR@20:0.0332,NDCG@20:0.0127) [18.7 s]
+INFO:root:Epoch 21    loss=0.000408 [17.0 s]	dev=(HR@20:0.0303,NDCG@20:0.0119) [18.7 s]
+INFO:root:Epoch 22    loss=0.000408 [16.9 s]	dev=(HR@20:0.0315,NDCG@20:0.0122) [18.5 s]
+INFO:root:Epoch 23    loss=0.000408 [16.9 s]	dev=(HR@20:0.0309,NDCG@20:0.0121) [18.8 s]
+INFO:root:Epoch 24    loss=0.000408 [17.2 s]	dev=(HR@20:0.0307,NDCG@20:0.0121) [25.2 s]
+INFO:root:Epoch 25    loss=0.000408 [23.0 s]	dev=(HR@20:0.0314,NDCG@20:0.0123) [29.5 s]
+INFO:root:Epoch 26    loss=0.000408 [20.7 s]	dev=(HR@20:0.0318,NDCG@20:0.0123) [25.7 s]
+INFO:root:Epoch 27    loss=0.000408 [21.3 s]	dev=(HR@20:0.0306,NDCG@20:0.0120) [25.0 s]
+INFO:root:Epoch 28    loss=0.000408 [21.0 s]	dev=(HR@20:0.0339,NDCG@20:0.0128) [25.1 s]
+INFO:root:Epoch 29    loss=0.000408 [21.5 s]	dev=(HR@20:0.0338,NDCG@20:0.0128) [25.4 s]
+INFO:root:Epoch 30    loss=0.000408 [21.2 s]	dev=(HR@20:0.0331,NDCG@20:0.0126) [25.2 s]
+INFO:root:Epoch 31    loss=0.000408 [21.7 s]	dev=(HR@20:0.0310,NDCG@20:0.0122) [25.7 s]
+INFO:root:Epoch 32    loss=0.000408 [22.7 s]	dev=(HR@20:0.0313,NDCG@20:0.0122) [24.7 s]
+INFO:root:Early stop at 32 based on dev result.
+INFO:root:
+Best Iter(dev)=    3	 dev=(HR@20:0.0343,NDCG@20:0.0129) [1297.1 s] 
+INFO:root:Load model from ../model/TDiffRec_a/TDiffRec_a__Grocery_and_Gourmet_Food__0__lr=0.0005__l2=0.0001__steps=5__noise_scale=0.005__reweight=0__w_min=0.2__w_max=1.0.pt
+INFO:root:
+Dev  After Training: (HR@5:0.0110,NDCG@5:0.0067,HR@10:0.0187,NDCG@10:0.0091,HR@20:0.0343,NDCG@20:0.0129,HR@50:0.0614,NDCG@50:0.0183)
+INFO:root:
+Test After Training: (HR@5:0.0061,NDCG@5:0.0035,HR@10:0.0134,NDCG@10:0.0057,HR@20:0.0284,NDCG@20:0.0095,HR@50:0.0479,NDCG@50:0.0133)
+INFO:root:Saving top-100 recommendation results to: ../log/TDiffRec_a\TDiffRec_a__Grocery_and_Gourmet_Food__0__lr=0\rec-TDiffRec_a-dev_20251225_140629.csv
+INFO:root:dev Prediction results saved!
+INFO:root:Saving top-100 recommendation results to: ../log/TDiffRec_a\TDiffRec_a__Grocery_and_Gourmet_Food__0__lr=0\rec-TDiffRec_a-test_20251225_140654.csv
+INFO:root:test Prediction results saved!
+INFO:root:
+--------------------------------------------- END: 2025-12-25 14:07:20 ---------------------------------------------

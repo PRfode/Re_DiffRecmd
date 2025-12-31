@@ -1,0 +1,50 @@
+INFO:root:Namespace(model_name='DiffRec_c', model_mode='')
+INFO:root:--------------------------------------------- BEGIN: 2025-12-28 15:58:15 ---------------------------------------------
+INFO:root:
+===========================================
+ Arguments          | Values               
+===========================================
+ batch_size         | 400                 
+ data_appendix      |                     
+ dataset            | MovieLens_1M/ML_1...
+ dims               | [1000]              
+ early_stop         | 40                  
+ emb_size           | 32                  
+ epoch              | 200                 
+ eval_batch_size    | 256                 
+ gpu                |                     
+ l2                 | 1e-06               
+ lr                 | 5e-05               
+ main_metric        | HR@20               
+ noise_max          | 0.01                
+ noise_min          | 0.001               
+ noise_scale        | 0.01                
+ norm               | 0                   
+ num_workers        | 5                   
+ optimizer          | Adam                
+ random_seed        | 0                   
+ reweight           | 0                   
+ sampling_steps     | 0                   
+ save_final_results | 1                   
+ steps              | 5                   
+ topk               | 5,10,20,50          
+===========================================
+INFO:root:Device: cpu
+INFO:root:Load corpus from ../data/MovieLens_1M/ML_1MGDR\BaseReader.pkl
+INFO:root:#params: 7945065
+INFO:root:DiffRec_c(
+  (dnn): DNN(
+    (time_emb): Sequential(
+      (0): Linear(in_features=32, out_features=32, bias=True)
+      (1): SiLU()
+      (2): Linear(in_features=32, out_features=32, bias=True)
+    )
+    (layers): ModuleList(
+      (0): Linear(in_features=3985, out_features=1000, bias=True)
+      (1): Linear(in_features=1000, out_features=3953, bias=True)
+    )
+    (drop): Dropout(p=0.5, inplace=False)
+  )
+)
+INFO:root:Test Before Training: (HR@5:0.0012,NDCG@5:0.0008,HR@10:0.0028,NDCG@10:0.0013,HR@20:0.0053,NDCG@20:0.0019,HR@50:0.0106,NDCG@50:0.0029)
+INFO:root:Optimizer: Adam

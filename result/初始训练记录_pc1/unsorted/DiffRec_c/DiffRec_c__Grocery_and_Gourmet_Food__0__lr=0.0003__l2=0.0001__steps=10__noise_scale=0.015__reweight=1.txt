@@ -1,0 +1,121 @@
+INFO:root:Namespace(model_name='DiffRec_c', model_mode='')
+INFO:root:--------------------------------------------- BEGIN: 2025-12-23 11:07:45 ---------------------------------------------
+INFO:root:
+===========================================
+ Arguments          | Values               
+===========================================
+ batch_size         | 512                 
+ data_appendix      |                     
+ dataset            | Grocery_and_Gourm...
+ dims               | [800,800]           
+ early_stop         | 45                  
+ emb_size           | 16                  
+ epoch              | 200                 
+ eval_batch_size    | 256                 
+ gpu                |                     
+ l2                 | 0.0001              
+ lr                 | 0.0003              
+ main_metric        | HR@20               
+ noise_max          | 0.015               
+ noise_min          | 0.0005              
+ noise_scale        | 0.015               
+ norm               | 1                   
+ num_workers        | 5                   
+ optimizer          | Adam                
+ random_seed        | 0                   
+ reweight           | 1                   
+ sampling_steps     | 5                   
+ save_final_results | 1                   
+ steps              | 10                  
+ topk               | 5,10,20,50          
+===========================================
+INFO:root:Device: cpu
+INFO:root:Load corpus from ../data/Grocery_and_Gourmet_Food\BaseReader.pkl
+INFO:root:#params: 14606058
+INFO:root:DiffRec_c(
+  (dnn): DNN(
+    (time_emb): Sequential(
+      (0): Linear(in_features=16, out_features=16, bias=True)
+      (1): SiLU()
+      (2): Linear(in_features=16, out_features=16, bias=True)
+    )
+    (layers): ModuleList(
+      (0): Linear(in_features=8730, out_features=800, bias=True)
+      (1): Linear(in_features=800, out_features=800, bias=True)
+      (2): Linear(in_features=800, out_features=8714, bias=True)
+    )
+    (drop): Dropout(p=0.5, inplace=False)
+  )
+)
+INFO:root:Test Before Training: (HR@5:0.0000,NDCG@5:0.0000,HR@10:0.0003,NDCG@10:0.0001,HR@20:0.0012,NDCG@20:0.0003,HR@50:0.0037,NDCG@50:0.0008)
+INFO:root:Optimizer: Adam
+INFO:root:Epoch 1     loss=9.4730 [28.5 s]	dev=(HR@20:0.0224,NDCG@20:0.0098) [53.9 s] *
+INFO:root:Epoch 2     loss=8.8249 [116.5 s]	dev=(HR@20:0.0253,NDCG@20:0.0100) [232.4 s] *
+INFO:root:Namespace(model_name='DiffRec_c', model_mode='')
+INFO:root:--------------------------------------------- BEGIN: 2025-12-23 11:42:50 ---------------------------------------------
+INFO:root:
+===========================================
+ Arguments          | Values               
+===========================================
+ batch_size         | 512                 
+ data_appendix      |                     
+ dataset            | Grocery_and_Gourm...
+ dims               | [800,800]           
+ early_stop         | 45                  
+ emb_size           | 16                  
+ epoch              | 200                 
+ eval_batch_size    | 256                 
+ gpu                |                     
+ l2                 | 0.0001              
+ lr                 | 0.0003              
+ main_metric        | HR@20               
+ noise_max          | 0.015               
+ noise_min          | 0.0005              
+ noise_scale        | 0.015               
+ norm               | 1                   
+ num_workers        | 5                   
+ optimizer          | Adam                
+ random_seed        | 0                   
+ reweight           | 1                   
+ sampling_steps     | 5                   
+ save_final_results | 1                   
+ steps              | 10                  
+ topk               | 5,10,20,50          
+===========================================
+INFO:root:Device: cpu
+INFO:root:Load corpus from ../data/Grocery_and_Gourmet_Food\BaseReader.pkl
+INFO:root:#params: 14606058
+INFO:root:DiffRec_c(
+  (dnn): DNN(
+    (time_emb): Sequential(
+      (0): Linear(in_features=16, out_features=16, bias=True)
+      (1): SiLU()
+      (2): Linear(in_features=16, out_features=16, bias=True)
+    )
+    (layers): ModuleList(
+      (0): Linear(in_features=8730, out_features=800, bias=True)
+      (1): Linear(in_features=800, out_features=800, bias=True)
+      (2): Linear(in_features=800, out_features=8714, bias=True)
+    )
+    (drop): Dropout(p=0.5, inplace=False)
+  )
+)
+INFO:root:Test Before Training: (HR@5:0.0000,NDCG@5:0.0000,HR@10:0.0003,NDCG@10:0.0001,HR@20:0.0012,NDCG@20:0.0003,HR@50:0.0037,NDCG@50:0.0008)
+INFO:root:Optimizer: Adam
+INFO:root:Epoch 1     loss=9.4730 [28.9 s]	dev=(HR@20:0.0224,NDCG@20:0.0098) [54.1 s] *
+INFO:root:Epoch 2     loss=8.8249 [27.3 s]	dev=(HR@20:0.0253,NDCG@20:0.0100) [53.1 s] *
+INFO:root:Epoch 3     loss=8.6233 [26.8 s]	dev=(HR@20:0.0256,NDCG@20:0.0103) [92.4 s] *
+INFO:root:Epoch 4     loss=8.4015 [114.0 s]	dev=(HR@20:0.0292,NDCG@20:0.0119) [223.3 s] *
+INFO:root:Epoch 5     loss=8.2359 [116.5 s]	dev=(HR@20:0.0172,NDCG@20:0.0070) [220.7 s]
+INFO:root:Epoch 6     loss=8.0403 [116.0 s]	dev=(HR@20:0.0245,NDCG@20:0.0098) [221.4 s]
+INFO:root:Epoch 7     loss=7.9248 [116.2 s]	dev=(HR@20:0.0219,NDCG@20:0.0091) [220.8 s]
+INFO:root:Epoch 8     loss=7.8327 [116.6 s]	dev=(HR@20:0.0223,NDCG@20:0.0089) [87.6 s]
+INFO:root:Epoch 9     loss=7.6431 [27.4 s]	dev=(HR@20:0.0293,NDCG@20:0.0118) [53.3 s] *
+INFO:root:Epoch 10    loss=7.5664 [26.5 s]	dev=(HR@20:0.0239,NDCG@20:0.0094) [52.3 s]
+INFO:root:Epoch 11    loss=7.5594 [26.5 s]	dev=(HR@20:0.0290,NDCG@20:0.0114) [52.4 s]
+INFO:root:Epoch 12    loss=7.4316 [26.5 s]	dev=(HR@20:0.0265,NDCG@20:0.0104) [116.2 s]
+INFO:root:Epoch 13    loss=7.3625 [115.3 s]	dev=(HR@20:0.0238,NDCG@20:0.0093) [222.7 s]
+INFO:root:Epoch 14    loss=7.2822 [116.6 s]	dev=(HR@20:0.0265,NDCG@20:0.0107) [222.8 s]
+INFO:root:Epoch 15    loss=7.2378 [116.8 s]	dev=(HR@20:0.0298,NDCG@20:0.0114) [224.0 s] *
+INFO:root:Epoch 16    loss=7.1402 [118.1 s]	dev=(HR@20:0.0294,NDCG@20:0.0120) [221.6 s]
+INFO:root:Epoch 17    loss=7.1363 [118.0 s]	dev=(HR@20:0.0275,NDCG@20:0.0111) [170.9 s]

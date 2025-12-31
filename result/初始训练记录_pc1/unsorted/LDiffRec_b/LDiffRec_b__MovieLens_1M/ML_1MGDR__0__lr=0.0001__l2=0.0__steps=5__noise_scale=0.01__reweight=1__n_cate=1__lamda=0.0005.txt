@@ -1,0 +1,162 @@
+INFO:root:Namespace(model_name='LDiffRec_b', model_mode='')
+INFO:root:--------------------------------------------- BEGIN: 2025-12-22 19:51:00 ---------------------------------------------
+INFO:root:
+===========================================
+ Arguments          | Values               
+===========================================
+ act_func           | tanh                
+ anneal_cap         | 0.002               
+ anneal_steps       | 100                 
+ batch_size         | 512                 
+ data_appendix      |                     
+ dataset            | MovieLens_1M/ML_1...
+ dims               | [500, 300]          
+ early_stop         | 50                  
+ emb_path           | ../embeddings/      
+ emb_size           | 10                  
+ epoch              | 200                 
+ eval_batch_size    | 256                 
+ gpu                |                     
+ in_dims            | [500, 300]          
+ l2                 | 0.0                 
+ lamda              | 0.0005              
+ lr                 | 0.0001              
+ main_metric        | HR@20               
+ n_cate             | 1                   
+ noise_max          | 0.01                
+ noise_min          | 0.001               
+ noise_scale        | 0.01                
+ norm               | 0                   
+ num_workers        | 5                   
+ optimizer          | Adam                
+ out_dims           | [300, 500]          
+ random_seed        | 0                   
+ reparam            | 1                   
+ reweight           | 1                   
+ sampling_steps     | 5                   
+ save_final_results | 1                   
+ steps              | 5                   
+ topk               | 5,10,20,50          
+ vae_anneal_cap     | 0.2                 
+ vae_anneal_steps   | 200                 
+===========================================
+INFO:root:Device: cpu
+INFO:root:Load corpus from ../data/MovieLens_1M/ML_1MGDR\BaseReader.pkl
+INFO:root:#params: 4895173
+INFO:root:LDiffRec_b(
+  (autoencoder): AutoEncoder(
+    (dropout): Dropout(p=0.1, inplace=False)
+    (encoder): Sequential(
+      (0): Linear(in_features=3953, out_features=500, bias=True)
+      (1): Tanh()
+      (2): Linear(in_features=500, out_features=600, bias=True)
+      (3): Tanh()
+    )
+    (decoder): Sequential(
+      (0): Linear(in_features=300, out_features=300, bias=True)
+      (1): Tanh()
+      (2): Linear(in_features=300, out_features=500, bias=True)
+      (3): Tanh()
+      (4): Linear(in_features=500, out_features=3953, bias=True)
+    )
+  )
+  (dnn): DNN(
+    (time_emb): Sequential(
+      (0): Linear(in_features=10, out_features=10, bias=True)
+      (1): SiLU()
+      (2): Linear(in_features=10, out_features=10, bias=True)
+    )
+    (layers): ModuleList(
+      (0): Linear(in_features=310, out_features=500, bias=True)
+      (1): Linear(in_features=500, out_features=300, bias=True)
+      (2): Linear(in_features=300, out_features=300, bias=True)
+    )
+    (drop): Dropout(p=0.5, inplace=False)
+  )
+)
+INFO:root:Test Before Training: (HR@5:0.0010,NDCG@5:0.0005,HR@10:0.0022,NDCG@10:0.0008,HR@20:0.0046,NDCG@20:0.0014,HR@50:0.0131,NDCG@50:0.0031)
+INFO:root:Optimizer: Adam
+INFO:root:Namespace(model_name='LDiffRec_b', model_mode='')
+INFO:root:--------------------------------------------- BEGIN: 2025-12-22 19:54:27 ---------------------------------------------
+INFO:root:
+===========================================
+ Arguments          | Values               
+===========================================
+ act_func           | tanh                
+ anneal_cap         | 0.002               
+ anneal_steps       | 100                 
+ batch_size         | 512                 
+ data_appendix      |                     
+ dataset            | MovieLens_1M/ML_1...
+ dims               | [500, 300]          
+ early_stop         | 50                  
+ emb_path           | ../embeddings/      
+ emb_size           | 10                  
+ epoch              | 200                 
+ eval_batch_size    | 256                 
+ gpu                |                     
+ in_dims            | [500, 300]          
+ l2                 | 0.0                 
+ lamda              | 0.0005              
+ lr                 | 0.0001              
+ main_metric        | HR@20               
+ n_cate             | 1                   
+ noise_max          | 0.01                
+ noise_min          | 0.001               
+ noise_scale        | 0.01                
+ norm               | 0                   
+ num_workers        | 5                   
+ optimizer          | Adam                
+ out_dims           | [300, 500]          
+ random_seed        | 0                   
+ reparam            | 1                   
+ reweight           | 1                   
+ sampling_steps     | 5                   
+ save_final_results | 1                   
+ steps              | 5                   
+ topk               | 5,10,20,50          
+ vae_anneal_cap     | 0.2                 
+ vae_anneal_steps   | 200                 
+===========================================
+INFO:root:Device: cpu
+INFO:root:Load corpus from ../data/MovieLens_1M/ML_1MGDR\BaseReader.pkl
+INFO:root:#params: 4895173
+INFO:root:LDiffRec_b(
+  (autoencoder): AutoEncoder(
+    (dropout): Dropout(p=0.1, inplace=False)
+    (encoder): Sequential(
+      (0): Linear(in_features=3953, out_features=500, bias=True)
+      (1): Tanh()
+      (2): Linear(in_features=500, out_features=600, bias=True)
+      (3): Tanh()
+    )
+    (decoder): Sequential(
+      (0): Linear(in_features=300, out_features=300, bias=True)
+      (1): Tanh()
+      (2): Linear(in_features=300, out_features=500, bias=True)
+      (3): Tanh()
+      (4): Linear(in_features=500, out_features=3953, bias=True)
+    )
+  )
+  (dnn): DNN(
+    (time_emb): Sequential(
+      (0): Linear(in_features=10, out_features=10, bias=True)
+      (1): SiLU()
+      (2): Linear(in_features=10, out_features=10, bias=True)
+    )
+    (layers): ModuleList(
+      (0): Linear(in_features=310, out_features=500, bias=True)
+      (1): Linear(in_features=500, out_features=300, bias=True)
+      (2): Linear(in_features=300, out_features=300, bias=True)
+    )
+    (drop): Dropout(p=0.5, inplace=False)
+  )
+)
+INFO:root:Test Before Training: (HR@5:0.0010,NDCG@5:0.0005,HR@10:0.0022,NDCG@10:0.0008,HR@20:0.0046,NDCG@20:0.0014,HR@50:0.0131,NDCG@50:0.0031)
+INFO:root:Optimizer: Adam
+INFO:root:Epoch 1     loss=1392.8660 [23.8 s]	dev=(HR@20:0.0167,NDCG@20:0.0060) [22.7 s] *
+INFO:root:Epoch 2     loss=1364.1933 [22.0 s]	dev=(HR@20:0.0345,NDCG@20:0.0121) [23.0 s] *
+INFO:root:Epoch 3     loss=1305.1083 [22.0 s]	dev=(HR@20:0.0550,NDCG@20:0.0203) [22.6 s] *
+INFO:root:Epoch 4     loss=1275.9839 [22.6 s]	dev=(HR@20:0.0681,NDCG@20:0.0260) [36.7 s] *
+INFO:root:Epoch 5     loss=1260.6314 [32.3 s]	dev=(HR@20:0.0713,NDCG@20:0.0279) [38.7 s] *
+INFO:root:Epoch 6     loss=1254.2930 [150.0 s]	dev=(HR@20:0.0701,NDCG@20:0.0269) [22.8 s]

@@ -1,0 +1,117 @@
+INFO:root:Namespace(model_name='LDiffRec_b', model_mode='')
+INFO:root:--------------------------------------------- BEGIN: 2025-12-22 22:28:21 ---------------------------------------------
+INFO:root:
+===========================================
+ Arguments          | Values               
+===========================================
+ act_func           | tanh                
+ anneal_cap         | 0.003               
+ anneal_steps       | 100                 
+ batch_size         | 512                 
+ data_appendix      |                     
+ dataset            | MovieLens_1M/ML_1...
+ dims               | [500, 300]          
+ early_stop         | 50                  
+ emb_path           | ../embeddings/      
+ emb_size           | 10                  
+ epoch              | 200                 
+ eval_batch_size    | 256                 
+ gpu                |                     
+ in_dims            | [500, 300]          
+ l2                 | 0.0                 
+ lamda              | 0.01                
+ lr                 | 0.0001              
+ main_metric        | HR@20               
+ n_cate             | 1                   
+ noise_max          | 0.01                
+ noise_min          | 0.0005              
+ noise_scale        | 0.005               
+ norm               | 0                   
+ num_workers        | 5                   
+ optimizer          | Adam                
+ out_dims           | [300, 500]          
+ random_seed        | 0                   
+ reparam            | 1                   
+ reweight           | 1                   
+ sampling_steps     | 5                   
+ save_final_results | 1                   
+ steps              | 5                   
+ topk               | 5,10,20,50          
+ vae_anneal_cap     | 0.25                
+ vae_anneal_steps   | 500                 
+===========================================
+INFO:root:Device: cpu
+INFO:root:Load corpus from ../data/MovieLens_1M/ML_1MGDR\BaseReader.pkl
+INFO:root:#params: 4895173
+INFO:root:LDiffRec_b(
+  (autoencoder): AutoEncoder(
+    (dropout): Dropout(p=0.1, inplace=False)
+    (encoder): Sequential(
+      (0): Linear(in_features=3953, out_features=500, bias=True)
+      (1): Tanh()
+      (2): Linear(in_features=500, out_features=600, bias=True)
+      (3): Tanh()
+    )
+    (decoder): Sequential(
+      (0): Linear(in_features=300, out_features=300, bias=True)
+      (1): Tanh()
+      (2): Linear(in_features=300, out_features=500, bias=True)
+      (3): Tanh()
+      (4): Linear(in_features=500, out_features=3953, bias=True)
+    )
+  )
+  (dnn): DNN(
+    (time_emb): Sequential(
+      (0): Linear(in_features=10, out_features=10, bias=True)
+      (1): SiLU()
+      (2): Linear(in_features=10, out_features=10, bias=True)
+    )
+    (layers): ModuleList(
+      (0): Linear(in_features=310, out_features=500, bias=True)
+      (1): Linear(in_features=500, out_features=300, bias=True)
+      (2): Linear(in_features=300, out_features=300, bias=True)
+    )
+    (drop): Dropout(p=0.5, inplace=False)
+  )
+)
+INFO:root:Test Before Training: (HR@5:0.0013,NDCG@5:0.0007,HR@10:0.0018,NDCG@10:0.0008,HR@20:0.0038,NDCG@20:0.0013,HR@50:0.0114,NDCG@50:0.0029)
+INFO:root:Optimizer: Adam
+INFO:root:Epoch 1     loss=1558.8685 [109.0 s]	dev=(HR@20:0.0128,NDCG@20:0.0046) [38.1 s] *
+INFO:root:Epoch 2     loss=1517.5128 [23.0 s]	dev=(HR@20:0.0323,NDCG@20:0.0113) [42.6 s] *
+INFO:root:Epoch 3     loss=1440.0958 [52.1 s]	dev=(HR@20:0.0441,NDCG@20:0.0165) [25.8 s] *
+INFO:root:Epoch 4     loss=1371.6334 [25.9 s]	dev=(HR@20:0.0648,NDCG@20:0.0231) [25.7 s] *
+INFO:root:Epoch 5     loss=1336.9782 [32.6 s]	dev=(HR@20:0.0724,NDCG@20:0.0278) [52.6 s] *
+INFO:root:Epoch 6     loss=1322.5299 [24.6 s]	dev=(HR@20:0.0718,NDCG@20:0.0275) [24.9 s]
+INFO:root:Epoch 7     loss=1314.3197 [24.5 s]	dev=(HR@20:0.0711,NDCG@20:0.0266) [24.5 s]
+INFO:root:Epoch 8     loss=1310.9461 [23.9 s]	dev=(HR@20:0.0713,NDCG@20:0.0279) [24.6 s]
+INFO:root:Epoch 9     loss=1310.1391 [24.0 s]	dev=(HR@20:0.0691,NDCG@20:0.0274) [24.9 s]
+INFO:root:Epoch 10    loss=1307.8704 [24.5 s]	dev=(HR@20:0.0708,NDCG@20:0.0276) [25.0 s]
+INFO:root:Epoch 11    loss=1301.9396 [101.5 s]	dev=(HR@20:0.0706,NDCG@20:0.0276) [23.1 s]
+INFO:root:Epoch 12    loss=1302.3557 [65.4 s]	dev=(HR@20:0.0709,NDCG@20:0.0276) [105.4 s]
+INFO:root:Epoch 13    loss=1300.9608 [102.2 s]	dev=(HR@20:0.0703,NDCG@20:0.0277) [109.7 s]
+INFO:root:Epoch 14    loss=1295.9004 [37.5 s]	dev=(HR@20:0.0709,NDCG@20:0.0276) [23.2 s]
+INFO:root:Epoch 15    loss=1291.9768 [23.5 s]	dev=(HR@20:0.0703,NDCG@20:0.0274) [24.0 s]
+INFO:root:Epoch 16    loss=1288.9845 [24.0 s]	dev=(HR@20:0.0704,NDCG@20:0.0279) [25.2 s]
+INFO:root:Epoch 17    loss=1289.0668 [25.0 s]	dev=(HR@20:0.0709,NDCG@20:0.0277) [25.7 s]
+INFO:root:Epoch 18    loss=1287.2697 [27.6 s]	dev=(HR@20:0.0701,NDCG@20:0.0277) [31.9 s]
+INFO:root:Epoch 19    loss=1281.9960 [26.1 s]	dev=(HR@20:0.0709,NDCG@20:0.0278) [25.7 s]
+INFO:root:Epoch 20    loss=1281.6599 [24.7 s]	dev=(HR@20:0.0696,NDCG@20:0.0276) [66.9 s]
+INFO:root:Epoch 21    loss=1281.3914 [106.2 s]	dev=(HR@20:0.0706,NDCG@20:0.0277) [49.4 s]
+INFO:root:Epoch 22    loss=1278.4497 [22.7 s]	dev=(HR@20:0.0699,NDCG@20:0.0275) [64.4 s]
+INFO:root:Epoch 23    loss=1278.4166 [101.7 s]	dev=(HR@20:0.0708,NDCG@20:0.0278) [106.8 s]
+INFO:root:Epoch 24    loss=1275.2948 [103.9 s]	dev=(HR@20:0.0703,NDCG@20:0.0274) [112.3 s]
+INFO:root:Epoch 25    loss=1274.7840 [33.0 s]	dev=(HR@20:0.0714,NDCG@20:0.0278) [23.2 s]
+INFO:root:Epoch 26    loss=1274.3030 [22.8 s]	dev=(HR@20:0.0711,NDCG@20:0.0277) [35.2 s]
+INFO:root:Epoch 27    loss=1272.2182 [91.3 s]	dev=(HR@20:0.0709,NDCG@20:0.0275) [23.1 s]
+INFO:root:Epoch 28    loss=1270.2306 [45.5 s]	dev=(HR@20:0.0703,NDCG@20:0.0276) [55.3 s]
+INFO:root:Epoch 29    loss=1270.1207 [68.0 s]	dev=(HR@20:0.0711,NDCG@20:0.0276) [30.5 s]
+INFO:root:Epoch 30    loss=1267.7872 [44.0 s]	dev=(HR@20:0.0719,NDCG@20:0.0278) [25.0 s]
+INFO:root:Epoch 31    loss=1267.2679 [25.6 s]	dev=(HR@20:0.0706,NDCG@20:0.0279) [41.4 s]
+INFO:root:Epoch 32    loss=1266.3616 [107.2 s]	dev=(HR@20:0.0713,NDCG@20:0.0276) [92.3 s]
+INFO:root:Epoch 33    loss=1261.5824 [22.8 s]	dev=(HR@20:0.0704,NDCG@20:0.0273) [24.1 s]
+INFO:root:Epoch 34    loss=1262.7520 [23.4 s]	dev=(HR@20:0.0709,NDCG@20:0.0277) [24.4 s]
+INFO:root:Epoch 35    loss=1262.0986 [23.4 s]	dev=(HR@20:0.0694,NDCG@20:0.0270) [24.6 s]
+INFO:root:Epoch 36    loss=1260.8758 [23.4 s]	dev=(HR@20:0.0703,NDCG@20:0.0273) [24.4 s]
+INFO:root:Epoch 37    loss=1258.3282 [23.7 s]	dev=(HR@20:0.0689,NDCG@20:0.0267) [24.5 s]
+INFO:root:Epoch 38    loss=1257.1504 [66.7 s]	dev=(HR@20:0.0698,NDCG@20:0.0268) [110.9 s]
+INFO:root:Epoch 39    loss=1256.8398 [106.9 s]	dev=(HR@20:0.0676,NDCG@20:0.0262) [65.2 s]

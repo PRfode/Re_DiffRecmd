@@ -1,0 +1,45 @@
+INFO:root:Namespace(model_name='BPRMF', model_mode='')
+INFO:root:--------------------------------------------- BEGIN: 2025-12-26 00:30:46 ---------------------------------------------
+INFO:root:
+===========================================
+ Arguments          | Values               
+===========================================
+ batch_size         | 256                 
+ data_appendix      |                     
+ dataset            | MovieLens_1M/ML_1...
+ dropout            | 0                   
+ early_stop         | 45                  
+ emb_size           | 32                  
+ epoch              | 200                 
+ eval_batch_size    | 256                 
+ gpu                |                     
+ l2                 | 0.0                 
+ lr                 | 0.001               
+ main_metric        | HR@20               
+ num_neg            | 1                   
+ num_workers        | 5                   
+ optimizer          | Adam                
+ random_seed        | 0                   
+ save_final_results | 1                   
+ test_all           | 0                   
+ topk               | 5,10,20,50          
+===========================================
+INFO:root:Device: cpu
+INFO:root:Reading data from "data/", dataset = "MovieLens_1M/ML_1MTOPK" 
+INFO:root:Counting dataset statistics...
+INFO:root:"# user": 6032, "# item": 3125, "# entry": 574197
+INFO:root:Save corpus to ../data/MovieLens_1M/ML_1MTOPK\BaseReader.pkl
+INFO:root:#params: 293088
+INFO:root:BPRMF(
+  (u_embeddings): Embedding(6033, 32)
+  (i_embeddings): Embedding(3126, 32)
+)
+INFO:root:Test Before Training: (HR@5:0.0553,NDCG@5:0.0338,HR@10:0.1047,NDCG@10:0.0494,HR@20:0.2098,NDCG@20:0.0757,HR@50:0.5122,NDCG@50:0.1347)
+INFO:root:Optimizer: Adam
+INFO:root:Epoch 1     loss=0.4452 [27.8 s]	dev=(HR@20:0.7026,NDCG@20:0.3315) [25.1 s] *
+INFO:root:Epoch 2     loss=0.3103 [19.6 s]	dev=(HR@20:0.7240,NDCG@20:0.3500) [12.9 s] *
+INFO:root:Epoch 3     loss=0.2857 [18.6 s]	dev=(HR@20:0.7377,NDCG@20:0.3534) [12.9 s] *
+INFO:root:Epoch 4     loss=0.2676 [18.7 s]	dev=(HR@20:0.7428,NDCG@20:0.3584) [12.9 s] *
+INFO:root:Epoch 5     loss=0.2483 [18.7 s]	dev=(HR@20:0.7459,NDCG@20:0.3616) [12.9 s] *
+INFO:root:Epoch 6     loss=0.2296 [18.4 s]	dev=(HR@20:0.7506,NDCG@20:0.3632) [12.9 s] *
+INFO:root:Epoch 7     loss=0.2148 [18.5 s]	dev=(HR@20:0.7557,NDCG@20:0.3641) [13.1 s] *

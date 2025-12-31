@@ -1,0 +1,55 @@
+INFO:root:Namespace(model_name='DiffRec_c', model_mode='')
+INFO:root:--------------------------------------------- BEGIN: 2025-12-23 10:41:48 ---------------------------------------------
+INFO:root:
+===========================================
+ Arguments          | Values               
+===========================================
+ batch_size         | 512                 
+ data_appendix      |                     
+ dataset            | Grocery_and_Gourm...
+ dims               | [1024]              
+ early_stop         | 50                  
+ emb_size           | 32                  
+ epoch              | 200                 
+ eval_batch_size    | 256                 
+ gpu                |                     
+ l2                 | 0.0005              
+ lr                 | 5e-05               
+ main_metric        | HR@20               
+ noise_max          | 0.02                
+ noise_min          | 0.002               
+ noise_scale        | 0.02                
+ norm               | 0                   
+ num_workers        | 5                   
+ optimizer          | Adam                
+ random_seed        | 0                   
+ reweight           | 0                   
+ sampling_steps     | 0                   
+ save_final_results | 1                   
+ steps              | 7                   
+ topk               | 5,10,20,50          
+===========================================
+INFO:root:Device: cpu
+INFO:root:Load corpus from ../data/Grocery_and_Gourmet_Food\BaseReader.pkl
+INFO:root:#params: 17890890
+INFO:root:DiffRec_c(
+  (dnn): DNN(
+    (time_emb): Sequential(
+      (0): Linear(in_features=32, out_features=32, bias=True)
+      (1): SiLU()
+      (2): Linear(in_features=32, out_features=32, bias=True)
+    )
+    (layers): ModuleList(
+      (0): Linear(in_features=8746, out_features=1024, bias=True)
+      (1): Linear(in_features=1024, out_features=8714, bias=True)
+    )
+    (drop): Dropout(p=0.5, inplace=False)
+  )
+)
+INFO:root:Test Before Training: (HR@5:0.0003,NDCG@5:0.0002,HR@10:0.0005,NDCG@10:0.0002,HR@20:0.0014,NDCG@20:0.0005,HR@50:0.0052,NDCG@50:0.0012)
+INFO:root:Optimizer: Adam
+INFO:root:Epoch 1     loss=0.0018 [27.9 s]	dev=(HR@20:0.0016,NDCG@20:0.0005) [50.7 s] *
+INFO:root:Epoch 2     loss=0.0015 [26.1 s]	dev=(HR@20:0.0021,NDCG@20:0.0007) [50.4 s] *
+INFO:root:Epoch 3     loss=0.0014 [26.1 s]	dev=(HR@20:0.0028,NDCG@20:0.0009) [52.2 s] *
+INFO:root:Epoch 4     loss=0.0012 [48.8 s]	dev=(HR@20:0.0045,NDCG@20:0.0014) [57.9 s] *
+INFO:root:Early stop manually

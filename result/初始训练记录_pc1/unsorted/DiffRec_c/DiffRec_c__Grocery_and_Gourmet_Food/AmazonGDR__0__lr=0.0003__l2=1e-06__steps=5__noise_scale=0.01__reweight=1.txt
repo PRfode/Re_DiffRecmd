@@ -1,0 +1,104 @@
+INFO:root:Namespace(model_name='DiffRec_c', model_mode='')
+INFO:root:--------------------------------------------- BEGIN: 2025-12-28 22:42:51 ---------------------------------------------
+INFO:root:
+===========================================
+ Arguments          | Values               
+===========================================
+ batch_size         | 400                 
+ data_appendix      |                     
+ dataset            | Grocery_and_Gourm...
+ dims               | [1000]              
+ early_stop         | 20                  
+ emb_size           | 10                  
+ epoch              | 200                 
+ eval_batch_size    | 400                 
+ gpu                |                     
+ l2                 | 1e-06               
+ lr                 | 0.0003              
+ main_metric        | HR@20               
+ noise_max          | 0.01                
+ noise_min          | 0.001               
+ noise_scale        | 0.01                
+ norm               | 0                   
+ num_workers        | 5                   
+ optimizer          | Adam                
+ random_seed        | 0                   
+ reweight           | 1                   
+ sampling_steps     | 0                   
+ save_final_results | 1                   
+ steps              | 5                   
+ topk               | 5,10,20,50          
+===========================================
+INFO:root:Device: cpu
+INFO:root:Load corpus from ../data/Grocery_and_Gourmet_Food/AmazonGDR\BaseReader.pkl
+INFO:root:#params: 17447934
+INFO:root:DiffRec_c(
+  (dnn): DNN(
+    (time_emb): Sequential(
+      (0): Linear(in_features=10, out_features=10, bias=True)
+      (1): SiLU()
+      (2): Linear(in_features=10, out_features=10, bias=True)
+    )
+    (layers): ModuleList(
+      (0): Linear(in_features=8724, out_features=1000, bias=True)
+      (1): Linear(in_features=1000, out_features=8714, bias=True)
+    )
+    (drop): Dropout(p=0.5, inplace=False)
+  )
+)
+INFO:root:Test Before Training: (HR@5:0.0004,NDCG@5:0.0003,HR@10:0.0008,NDCG@10:0.0004,HR@20:0.0022,NDCG@20:0.0008,HR@50:0.0050,NDCG@50:0.0013)
+INFO:root:Optimizer: Adam
+INFO:root:Epoch 1     loss=25.4873 [39.4 s]	dev=(HR@20:0.0224,NDCG@20:0.0098) [148.9 s] *
+INFO:root:Epoch 2     loss=19.5975 [42.0 s]	dev=(HR@20:0.0428,NDCG@20:0.0170) [95.5 s] *
+INFO:root:Epoch 3     loss=17.1895 [88.6 s]	dev=(HR@20:0.0511,NDCG@20:0.0203) [115.5 s] *
+INFO:root:Epoch 4     loss=15.8358 [24.6 s]	dev=(HR@20:0.0557,NDCG@20:0.0223) [83.9 s] *
+INFO:root:Epoch 5     loss=15.0334 [26.4 s]	dev=(HR@20:0.0567,NDCG@20:0.0234) [89.9 s] *
+INFO:root:Epoch 6     loss=14.3509 [46.9 s]	dev=(HR@20:0.0605,NDCG@20:0.0249) [85.1 s] *
+INFO:root:Epoch 7     loss=13.7986 [22.6 s]	dev=(HR@20:0.0595,NDCG@20:0.0250) [73.3 s]
+INFO:root:Epoch 8     loss=13.3448 [26.1 s]	dev=(HR@20:0.0642,NDCG@20:0.0274) [48.6 s] *
+INFO:root:Epoch 9     loss=12.9819 [25.4 s]	dev=(HR@20:0.0654,NDCG@20:0.0277) [59.4 s] *
+INFO:root:Epoch 10    loss=12.7048 [89.7 s]	dev=(HR@20:0.0613,NDCG@20:0.0261) [159.4 s]
+INFO:root:Epoch 11    loss=12.4534 [89.5 s]	dev=(HR@20:0.0716,NDCG@20:0.0296) [158.8 s] *
+INFO:root:Epoch 12    loss=12.1960 [62.1 s]	dev=(HR@20:0.0703,NDCG@20:0.0304) [148.5 s]
+INFO:root:Epoch 13    loss=12.0102 [79.0 s]	dev=(HR@20:0.0740,NDCG@20:0.0320) [146.7 s] *
+INFO:root:Epoch 14    loss=11.8129 [78.6 s]	dev=(HR@20:0.0738,NDCG@20:0.0322) [126.9 s]
+INFO:root:Epoch 15    loss=11.6540 [75.1 s]	dev=(HR@20:0.0658,NDCG@20:0.0292) [141.0 s]
+INFO:root:Epoch 16    loss=11.5740 [80.2 s]	dev=(HR@20:0.0692,NDCG@20:0.0299) [150.3 s]
+INFO:root:Epoch 17    loss=11.4346 [79.2 s]	dev=(HR@20:0.0665,NDCG@20:0.0286) [149.4 s]
+INFO:root:Epoch 18    loss=11.3251 [80.9 s]	dev=(HR@20:0.0719,NDCG@20:0.0307) [154.1 s]
+INFO:root:Epoch 19    loss=11.2071 [81.3 s]	dev=(HR@20:0.0747,NDCG@20:0.0324) [154.2 s] *
+INFO:root:Epoch 20    loss=11.1541 [79.5 s]	dev=(HR@20:0.0727,NDCG@20:0.0318) [148.8 s]
+INFO:root:Epoch 21    loss=11.0918 [80.7 s]	dev=(HR@20:0.0762,NDCG@20:0.0324) [143.6 s] *
+INFO:root:Epoch 22    loss=11.0314 [79.8 s]	dev=(HR@20:0.0710,NDCG@20:0.0316) [143.4 s]
+INFO:root:Epoch 23    loss=10.9672 [78.2 s]	dev=(HR@20:0.0738,NDCG@20:0.0321) [145.4 s]
+INFO:root:Epoch 24    loss=10.9385 [79.7 s]	dev=(HR@20:0.0751,NDCG@20:0.0339) [143.2 s]
+INFO:root:Epoch 25    loss=10.8742 [80.3 s]	dev=(HR@20:0.0691,NDCG@20:0.0304) [143.5 s]
+INFO:root:Epoch 26    loss=10.8034 [78.7 s]	dev=(HR@20:0.0712,NDCG@20:0.0317) [145.0 s]
+INFO:root:Epoch 27    loss=10.7589 [78.9 s]	dev=(HR@20:0.0696,NDCG@20:0.0309) [146.1 s]
+INFO:root:Epoch 28    loss=10.7437 [79.1 s]	dev=(HR@20:0.0729,NDCG@20:0.0322) [144.1 s]
+INFO:root:Epoch 29    loss=10.7526 [79.2 s]	dev=(HR@20:0.0737,NDCG@20:0.0327) [147.4 s]
+INFO:root:Epoch 30    loss=10.7355 [81.4 s]	dev=(HR@20:0.0650,NDCG@20:0.0277) [147.3 s]
+INFO:root:Epoch 31    loss=10.6594 [79.6 s]	dev=(HR@20:0.0758,NDCG@20:0.0329) [146.7 s]
+INFO:root:Epoch 32    loss=10.6348 [80.2 s]	dev=(HR@20:0.0700,NDCG@20:0.0306) [149.4 s]
+INFO:root:Epoch 33    loss=10.6388 [80.4 s]	dev=(HR@20:0.0667,NDCG@20:0.0287) [101.4 s]
+INFO:root:Epoch 34    loss=10.6548 [65.8 s]	dev=(HR@20:0.0722,NDCG@20:0.0320) [143.2 s]
+INFO:root:Epoch 35    loss=10.6370 [78.3 s]	dev=(HR@20:0.0636,NDCG@20:0.0266) [140.5 s]
+INFO:root:Epoch 36    loss=10.5619 [58.9 s]	dev=(HR@20:0.0697,NDCG@20:0.0302) [141.6 s]
+INFO:root:Epoch 37    loss=10.5766 [77.2 s]	dev=(HR@20:0.0708,NDCG@20:0.0310) [143.3 s]
+INFO:root:Epoch 38    loss=10.5695 [77.3 s]	dev=(HR@20:0.0710,NDCG@20:0.0314) [144.6 s]
+INFO:root:Epoch 39    loss=10.5921 [77.2 s]	dev=(HR@20:0.0672,NDCG@20:0.0291) [144.1 s]
+INFO:root:Epoch 40    loss=10.5251 [77.4 s]	dev=(HR@20:0.0690,NDCG@20:0.0310) [143.6 s]
+INFO:root:Early stop at 40 based on dev result.
+INFO:root:
+Best Iter(dev)=   21	 dev=(HR@20:0.0762,NDCG@20:0.0324) [8053.5 s] 
+INFO:root:Load model from ../model/DiffRec_c/DiffRec_c__Grocery_and_Gourmet_Food/AmazonGDR__0__lr=0.0003__l2=1e-06__steps=5__noise_scale=0.01__reweight=1.pt
+INFO:root:
+Dev  After Training: (HR@5:0.0304,NDCG@5:0.0195,HR@10:0.0507,NDCG@10:0.0261,HR@20:0.0759,NDCG@20:0.0324,HR@50:0.1238,NDCG@50:0.0419)
+INFO:root:
+Test After Training: (HR@5:0.0210,NDCG@5:0.0135,HR@10:0.0344,NDCG@10:0.0178,HR@20:0.0502,NDCG@20:0.0217,HR@50:0.0850,NDCG@50:0.0286)
+INFO:root:Saving top-100 recommendation results to: ../log/DiffRec_c/DiffRec_c__Grocery_and_Gourmet_Food\AmazonGDR__0__lr=0\rec-DiffRec_c-dev.csv
+INFO:root:dev Prediction results saved!
+INFO:root:Saving top-100 recommendation results to: ../log/DiffRec_c/DiffRec_c__Grocery_and_Gourmet_Food\AmazonGDR__0__lr=0\rec-DiffRec_c-test.csv
+INFO:root:test Prediction results saved!
+INFO:root:
+--------------------------------------------- END: 2025-12-29 01:08:02 ---------------------------------------------
