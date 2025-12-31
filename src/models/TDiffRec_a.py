@@ -4,9 +4,13 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 import math
+import pandas as pd
 from models.BaseModel import BaseModel
 from collections import defaultdict
 
+# ============================================================================
+# 辅助函数
+# ============================================================================
 def betas_from_linear_variance(steps, variance, max_beta=0.999):
     alpha_bar = 1 - variance
     betas = []
@@ -19,12 +23,12 @@ def mean_flat(tensor):
     return tensor.mean(dim=list(range(1, len(tensor.shape))))
 
 # ============================================================================
-# DiffRec_c
+# 核心模型：T_DiffRec
 # ============================================================================
-class DiffRec_c(BaseModel):
+class TDiffRec_a(BaseModel):
     reader = 'BaseReader'
     runner = 'BaseRunner'
-    extra_log_args = ['steps', 'noise_scale', 'reweight']
+    extra_log_args = ['steps', 'noise_scale', 'reweight', 'w_min', 'w_max']
 
     @staticmethod
     def parse_model_args(parser):
@@ -37,11 +41,19 @@ class DiffRec_c(BaseModel):
         parser.add_argument('--noise_max', type=float, default=0.02, help='Noise upper bound.')
         parser.add_argument('--sampling_steps', type=int, default=0, help='Steps during inference (0 means = steps).')
         parser.add_argument('--reweight', type=int, default=1, help='Assign different weight to different timestep.')
+        
+        # T-DiffRec 特有参数
+        parser.add_argument('--w_min', type=float, default=0.1, help='The minimum weight for interactions.')
+        parser.add_argument('--w_max', type=float, default=1.0, help='The maximum weight for interactions.')
+        
         return BaseModel.parse_model_args(parser)
 
     def __init__(self, args, corpus):
         super().__init__(args, corpus)
         self.corpus = corpus
+
+        # 【关键】清空 ReChorus 的测试集 Mask (同 DiffRec_c)
+        self.corpus.residual_clicked_set = defaultdict(set)
 
         self.dims = eval(args.dims)
         self.norm = bool(args.norm)
@@ -53,6 +65,10 @@ class DiffRec_c(BaseModel):
         self.sampling_steps = args.sampling_steps if args.sampling_steps > 0 else self.steps
         self.reweight = bool(args.reweight)
         
+        # T-DiffRec 参数
+        self.w_min = args.w_min
+        self.w_max = args.w_max
+        
         self.test_all = 1 
 
         self.dnn = DNN(corpus.n_items, self.dims, self.emb_size, self.norm)
@@ -63,6 +79,7 @@ class DiffRec_c(BaseModel):
         self.register_buffer('Lt_count', torch.zeros(self.steps, dtype=torch.long))
 
     def _build_diffusion_params(self):
+        # 这里的逻辑与 DiffRec_c 完全一致
         if self.noise_scale == 0:
             self.betas = torch.tensor([0.0] * self.steps).float().to(self.device)
         else:
@@ -87,6 +104,7 @@ class DiffRec_c(BaseModel):
         self.register_buffer('posterior_log_variance_clipped', torch.log(
             torch.cat([posterior_variance[1].unsqueeze(0), posterior_variance[1:]])
         ))
+        
         self.register_buffer('posterior_mean_coef1', self.betas * torch.sqrt(alphas_cumprod_prev) / (1.0 - alphas_cumprod))
         self.register_buffer('posterior_mean_coef2', (1.0 - alphas_cumprod_prev) * torch.sqrt(alphas) / (1.0 - alphas_cumprod))
 
@@ -144,10 +162,6 @@ class DiffRec_c(BaseModel):
 
         final_loss = torch.mean(losses / pt)
         return {'loss': final_loss, 'prediction': torch.zeros(batch_size, 1, device=self.device)}
-
-    def loss(self, out_dict):
-        return out_dict['loss']
-
     # ========================================================================== #
     # code from gaussian_diffusion.py
     # ========================================================================== #
@@ -230,7 +244,7 @@ class DiffRec_c(BaseModel):
 
         model_variance = self._extract_into_tensor(model_variance, t, x.shape)
         model_log_variance = self._extract_into_tensor(model_log_variance, t, x.shape)
-
+        
         # if self.mean_type == ModelMeanType.START_X:
         #     pred_xstart = model_output
         # elif self.mean_type == ModelMeanType.EPSILON:
@@ -238,7 +252,7 @@ class DiffRec_c(BaseModel):
         # else:
         #     raise NotImplementedError(self.mean_type)
         pred_xstart = model_output
-
+        
         model_mean, _, _ = self.q_posterior_mean_variance(x_start=pred_xstart, x_t=x, t=t)
 
         assert (
@@ -351,17 +365,20 @@ class DiffRec_c(BaseModel):
         return tensor.mean(dim=list(range(1, len(tensor.shape))))
     
     # ========================================================================== #
-    # gaussian_diffusion code end
+    #                        gaussian_diffusion code end                         #
     # ========================================================================== #
+
+    def loss(self, out_dict):
+        return out_dict['loss']
 
     def inference(self, feed_dict):
         batch_users = feed_dict['user_id']
         batch_size = len(batch_users)
         
         # x = torch.randn(batch_size, self.corpus.n_items).to(self.device)
-        # 使用历史向量加噪作为起始
         x_start = feed_dict['vector'].float()
         with torch.no_grad():
+            # 关键修改：使用用户历史向量作为条件
             x = self.p_sample(
                 model=lambda xt, t: self.dnn(xt, t),
                 x_start=x_start,
@@ -389,14 +406,21 @@ class DiffRec_c(BaseModel):
                 else:
                     x = model_mean
 
-        # Swap Trick
-        target_items = feed_dict['item_id'].view(-1)
-        # 取出第 0 列的分数 (备份)
+        # 【Magic Fix 2】: Swap Trick (列交换)
+        
+        # 1. 获取目标 Item ID，并强制展平为 [Batch_Size]
+        # 使用 .view(-1) 确保它是 1D 的，解决 RuntimeError
+        target_items = feed_dict['item_id'].view(-1) 
+        
+        # 2. 取出第 0 列的分数 (备份)
         col0_scores = x[:, 0].clone()
-        # 取出目标列的分数
+        
+        # 3. 取出目标列的分数
         batch_indices = torch.arange(batch_size).to(self.device)
         target_scores = x[batch_indices, target_items]
-        # 交换
+        
+        # 4. 交换
+        # 现在 target_scores 是 [Batch_Size]，x[:, 0] 也是 [Batch_Size]，形状匹配了
         x[:, 0] = target_scores
         x[batch_indices, target_items] = col0_scores
 
@@ -408,18 +432,25 @@ class DiffRec_c(BaseModel):
             res = res[..., None]
         return res.expand(broadcast_shape)
 
+    # ========================================================================
+    # Dataset 类：T-DiffRec 核心修改点 (Scope修复版)
+    # ========================================================================
     class Dataset(BaseModel.Dataset):
         def __init__(self, model, corpus, phase):
             self.model = model
             self.corpus = corpus
             self.phase = phase
-            
             self.buffer_dict = dict()
-
+            
+            # 【修复】始终加载训练集历史，确保 user_history_lists 可用
+            train_df = corpus.data_df['train']
+            self.user_history_lists = train_df.groupby('user_id')['item_id'].apply(list).to_dict()
+            
             if phase == 'train':
-                users = list(corpus.train_clicked_set.keys())
+                users = list(self.user_history_lists.keys())
             else:
                 users = corpus.data_df[phase]['user_id'].unique().tolist()
+                
             self.data = {'user_id': users}
 
         def __len__(self):
@@ -428,24 +459,24 @@ class DiffRec_c(BaseModel):
         def _get_feed_dict(self, index):
             user_id = self.data['user_id'][index]
             
-            # x0: 历史交互
-            clicked_items = list(self.corpus.train_clicked_set.get(user_id, []))
+            # --- T-DiffRec 核心逻辑：加权向量 ---
+            items = self.user_history_lists.get(user_id, [])
             vector = np.zeros(self.corpus.n_items, dtype=np.float32)
-            vector[clicked_items] = 1.0
             
-            # target: 真实的目标物品 ID
-            # 在 Train 阶段没有单一 target，返回 0
-            # 在 Dev/Test 阶段，BaseReader 的 data_df 里存了 target item_id
+            if len(items) > 0:
+                # 权重从 w_min 到 w_max 线性增长
+                w_min = self.model.w_min
+                w_max = self.model.w_max
+                weights = np.linspace(w_min, w_max, num=len(items))
+                vector[items] = weights
+            
+            # --- Target 处理 (同 DiffRec_c) ---
             target_item = 0
             if self.phase != 'train':
-                # 获取该用户在 Dev/Test DataFrame 中的 item_id
-                # 注意：self.corpus.data_df[self.phase] 每一行是一个 (user, item)
-                # 我们这里简化处理，假设每个用户只有一条 Dev/Test 数据 (Leave-One-Out)
-                # 这种查找效率较低，但对于 ML-1M 可接受。优化版应该预处理成 dict。
-                # ReChorus 的 BaseReader 其实本身就支持按行读取，但我们为了 DiffRec 这种 User-based Batch 改写了。
-                # 快速查找法：
                 user_rows = self.corpus.data_df[self.phase]
-                target_item = user_rows[user_rows['user_id'] == user_id]['item_id'].values[0]
+                target_df = user_rows[user_rows['user_id'] == user_id]
+                if len(target_df) > 0:
+                    target_item = target_df['item_id'].values[0]
 
             return {
                 'user_id': user_id,
@@ -458,7 +489,6 @@ class DiffRec_c(BaseModel):
             feed_dict['user_id'] = torch.tensor([d['user_id'] for d in feed_dicts])
             vectors = np.array([d['vector'] for d in feed_dicts])
             feed_dict['vector'] = torch.from_numpy(vectors)
-            
             item_ids = np.array([d['item_id'] for d in feed_dicts])
             feed_dict['item_id'] = torch.from_numpy(item_ids)
             return feed_dict

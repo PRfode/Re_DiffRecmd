@@ -4,8 +4,8 @@
     // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        {
-            "name": "DiffRec_c_MovieLens_1M",
+        { "name": "DiffRec_c_MovieLens_1M",
+
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
@@ -28,10 +28,190 @@
                 "--batch_size", "400",
                 "--reweight", "0",
                 "--early_stop", "50"
+            ],
+            "cmd": "python main.py --model_name DiffRec_c --dataset MovieLens_1M/ML_1MGDR --emb_size 10 --dims \"[1000]\" --lr 0.0001 --l2 0.0 --test_all 1 --steps 5 --noise_scale 0.01 --noise_min 0.001 --noise_max 0.01 --main_metric HR@20 --batch_size 400 --reweight 0 --early_stop 50"
+        },
+        { "name": "DiffRec_c_MovieLens_1M_testmore",
+
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "cwd": "${workspaceFolder}/src",
+            "console": "integratedTerminal",
+            "args": [
+                "--model_name", "DiffRec_c",
+                "--dataset", "MovieLens_1M/ML_1MGDR",
+                // "--path", "../data/",
+                "--emb_size", "10",
+                "--dims", "[500,500]",
+                "--lr", "0.0001",
+                "--l2", "0.0",
+                "--test_all", "1",
+                "--steps", "5",
+                "--noise_scale", "0.01",
+                "--noise_min", "0.001",
+                "--noise_max", "0.01",
+                "--main_metric", "HR@20",
+                "--batch_size", "400",
+                "--reweight", "0",
+                "--early_stop", "50"
+            ],
+            "cmd": "python main.py --model_name DiffRec_c --dataset MovieLens_1M/ML_1MTOPK --emb_size 10 --dims \"[1000,1000]\" --lr 0.0001 --l2 0.0 --test_all 1 --steps 5 --noise_scale 0.01 --noise_min 0.001 --noise_max 0.01 --main_metric HR@20 --batch_size 400 --reweight 0 --early_stop 50"
+        },
+        { "name": "DiffRec_c_Grocery_and_Gourmet_Food",
+            
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "cwd": "${workspaceFolder}/src",
+            "console": "integratedTerminal",
+            "args": [
+                "--model_name", "DiffRec_c",
+                "--dataset", "Grocery_and_Gourmet_Food",
+                // "--path", "../data/",
+
+                "--norm", "1",
+                "--emb_size", "16",
+                "--dims", "[800,800]",
+                "--early_stop", "45",
+                "--reweight", "1",
+                "--batch_size", "512",
+
+                "--lr", "0.0003",
+                "--l2", "0.0001",
+                "--test_all", "1",
+                "--steps", "10",
+                "--sampling_steps", "5",
+
+                "--noise_scale", "0.015",
+                "--noise_min", "0.0005",
+                "--noise_max", "0.015",
+
+                "--main_metric", "HR@20"
             ]
         },
-        {
-            "name": "L_DiffRec_b_MovieLens_1M",
+        { "name": "DiffRec_c_Grocery_and_Gourmet_Food_GDR",
+
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "cwd": "${workspaceFolder}/src",
+            "console": "integratedTerminal",
+            "args": [
+                "--model_name", "DiffRec_c",
+                "--dataset", "Grocery_and_Gourmet_Food/AmazonGDR",
+                // "--path", "../data/",
+
+                "--norm", "1",
+                "--emb_size", "10",
+                "--dims", "[1000]",
+                "--early_stop", "45",
+                "--reweight", "1",
+                "--batch_size", "512",
+
+                "--lr", "0.0001",
+                "--l2", "0.000001",
+                "--test_all", "1",
+                "--steps", "5",
+                "--sampling_steps", "0",
+
+                "--noise_scale", "0.01",
+                "--noise_min", "0.001",
+                "--noise_max", "0.01",
+
+                "--main_metric", "HR@20"
+            ],
+            "cmd": "python main.py --model_name DiffRec_c --batch_size 400 --dataset Grocery_and_Gourmet_Food/AmazonGDR --dims [1000] --early_stop 45 --emb_size 10 --epoch 200 --eval_batch_size 256 --l2 0.000001 --lr 0.0001 --main_metric HR@20 --noise_max 0.01 --noise_min 0.001 --noise_scale 0.01 --norm 0 --num_workers 5 --reweight 1 --sampling_steps 0 --steps 5"
+        },
+        { "name": "TDiffRec_b_Grocery_and_Gourmet_Food_GDR",
+
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "cwd": "${workspaceFolder}/src",
+            "console": "integratedTerminal",
+            "args": [
+                "--model_name", "TDiffRec_b",
+                "--dataset", "Grocery_and_Gourmet_Food/AmazonGDR",
+                // "--path", "../data/",
+
+                "--norm", "1",
+                "--emb_size", "10",
+                "--dims", "[1000]",
+                "--early_stop", "45",
+                "--reweight", "1",
+                "--batch_size", "512",
+
+                "--lr", "0.0001",
+                "--l2", "0.000001",
+                "--test_all", "1",
+                "--steps", "5",
+                "--sampling_steps", "0",
+
+                "--noise_scale", "0.01",
+                "--noise_min", "0.001",
+                "--noise_max", "0.01",
+
+                "--w_max", "1.0",
+                "--w_min", "0.6",
+
+                "--main_metric", "HR@20"
+            ],
+            "cmd": "python main.py --model_name TDiffRec_b --dataset Grocery_and_Gourmet_Food/AmazonGDR --norm 1 --emb_size 10 --dims [1000] --early_stop 45 --reweight 1 --batch_size 512 --lr 0.0001 --l2 0.000001 --test_all 1 --steps 5 --sampling_steps 0 --noise_scale 0.01 --noise_min 0.001 --noise_max 0.01 --w_max 1.0 --w_min 0.6 --main_metric HR@20"
+        },
+        { "name": "BPRMF_Grocery_and_Gourmet_Food",
+            
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "cwd": "${workspaceFolder}/src",
+            "console": "integratedTerminal",
+            "args": [
+                "--model_name", "BPRMF",
+                "--dataset", "Grocery_and_Gourmet_Food",
+                // "--path", "../data/",
+
+                "--emb_size", "64",
+                "--early_stop", "45",
+                "--batch_size", "256",
+
+                "--lr", "0.001",
+                "--l2", "0.000001",
+                "--test_all", "1",
+
+                "--main_metric", "HR@20"
+                // "--gpu","0",
+                // "--num_workers","4",
+            ]
+        },
+        { "name": "BPRMF_Grocery_and_Gourmet_Food_beta",
+            
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "cwd": "${workspaceFolder}/src",
+            "console": "integratedTerminal",
+            "args": [
+                "--model_name", "BPRMF",
+                "--dataset", "Grocery_and_Gourmet_Food",
+                // "--path", "../data/",
+
+                // "--norm", "1",
+                "--emb_size", "64",
+                "--early_stop", "45",
+                "--batch_size", "512",
+
+                "--lr", "0.001",
+                "--l2", "0.0001",
+                "--test_all", "1",
+
+                "--main_metric", "HR@20",
+                "--gpu","0",
+                "--num_workers","1"
+            ]
+        },
+        { "name": "L_DiffRec_b_MovieLens_1M",
+            
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
@@ -66,15 +246,15 @@
                 "--early_stop", "50"
             ]
         },
-        {
-            "name": "TDiffRec_a_MovieLens_1M",
+        { "name": "TDiffRec_b_MovieLens_1M",
+            
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "cwd": "${workspaceFolder}/src",
             "console": "integratedTerminal",
             "args": [
-                "--model_name", "TDiffRec_a",
+                "--model_name", "TDiffRec_b",
                 "--dataset", "MovieLens_1M/ML_1MGDR",
                 // "--path", "../data/",
                 "--emb_size", "10",
@@ -93,6 +273,6 @@
                 "--w_max", "1.0",
                 "--w_min", "0.5"
             ]
-        },
+        }
     ]
 }
