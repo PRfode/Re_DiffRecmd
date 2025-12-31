@@ -6,12 +6,14 @@
 ## Setup
 使用 git 导入项目后，安装对应依赖。
 
-使用 `pip install -r requirements.txt` 或者是 `conda env create -f environment.yml` 安装依赖。
+使用 `pip install -r requirements.txt` 安装依赖
+
+或者是 `conda env create -f environment.yml` 安装环境。
 
 注意事项：
 - 项目使用 `python==3.12.12`。
 - 项目使用CUDA12.9版本，如果有需要请安装其他版本的torch。
-- 项目仅保证在Windows/Mac环境下能够正确运行。
+- 项目仅保证在Windows环境下能够正确运行。
 
 ## Dataset Prepare
 在原本的基础上，我们增添了Leave-One-Out的GDR数据集，以供给DiffRec的训练。
